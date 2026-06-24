@@ -18,21 +18,33 @@ app.use(express.urlencoded({ extended: true }));
 
 // ユーザー一覧を表示する
 app.get("/", async (req, res) => {
-  const users = await prisma.user.findMany();
+  const users = await prisma.users.findMany();
   res.render("index", { users });
 });
 
 // 新しいユーザーを追加する
 app.post("/users", async (req, res) => {
-  const name = req.body.name;
-  const age = req.body.age ? parseInt(req.body.age) : null; // 年齢を数値に変える
-  if (name) {
-    await prisma.user.create({ 
-      data: { name, age } 
+  // フォームから送られてきたデータを受け取る
+  const { email, password, name, department, grade } = req.body;
+
+  try {
+    // データベースに保存する
+    await prisma.users.create({
+      data: {
+        email,
+        password, // 本番ではパスワードをハッシュ化するのじゃが、今はそのまま進めよう
+        name,
+        department: department || null,
+        grade: grade ? parseInt(grade) : null, // 数値に変換するのを忘れずにな
+      },
     });
+    res.redirect("/");
+  } catch (error) {
+    console.error("保存失敗:", error);
+    res.status(500).send("保存に失敗しました。メールアドレスの重複かもしれませぬ。");
   }
-  res.redirect("/");
 });
+
 
 
 app.listen(PORT, () => {
