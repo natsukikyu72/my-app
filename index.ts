@@ -1,5 +1,7 @@
 import "dotenv/config";
 import express from "express";
+import session from "express-session";
+import bcrypt from "bcryptjs";
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "./generated/prisma/client";
@@ -16,37 +18,71 @@ app.set("view engine", "ejs");
 app.set("views", "./views");
 app.use(express.urlencoded({ extended: true }));
 
-// ユーザー一覧を表示する
-app.get("/", async (req, res) => {
-  const users = await prisma.users.findMany();
-  res.render("index", { users });
-});
+app.use(session({
+  secret: "secret-key", // 本来は環境変数にするのが安全じゃ
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 60 * 60 * 1000 } // 1時間有効
+}));
 
-// 新しいユーザーを追加する
-app.post("/users", async (req, res) => {
-  // フォームから送られてきたデータを受け取る
-  const { email, password, name, department, grade } = req.body;
 
+// --- 1. 新規登録（Signup） ---
+app.post("/signup", async (req, res) => {
+  const { email, password, name ,department, grade } = req.body;
+
+  // --- ドメインチェックを追加 ---
+  // 文字列の最後が "@keio.jp" で終わっているか確認するのじゃ
+  if (!email.endsWith("@keio.jp")) {
+    return res.status(400).send("keio.jp のメールアドレスのみ登録可能です。");
+  }
+  // -------------------------
+
+  const hashedPassword = await bcrypt.hash(password, 10);
   try {
-    // データベースに保存する
-    await prisma.users.create({
-      data: {
-        email,
-        password, // 本番ではパスワードをハッシュ化するのじゃが、今はそのまま進めよう
-        name,
-        department: department || null,
-        grade: grade ? parseInt(grade) : null, // 数値に変換するのを忘れずにな
-      },
+    await prisma.user.create({
+      data: { email, password: hashedPassword, name, department: department || null,
+        grade: grade ? parseInt(grade) : null }
     });
-    res.redirect("/");
-  } catch (error) {
-    console.error("保存失敗:", error);
-    res.status(500).send("保存に失敗しました。メールアドレスの重複かもしれませぬ。");
+    res.redirect("/login");
+  } catch (e) {
+    res.status(400).send("登録に失敗しました");
   }
 });
 
 
+// --- 2. ログイン（Login） ---
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  const user = await prisma.user.findUnique({ where: { email } });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  // ユーザーがいて、かつパスワードが合っているか確認する
+  if (user && await bcrypt.compare(password, user.password)) {
+    // セッションにユーザー情報を保存（これで「ログイン中」になる）
+    (req.session as any).userId = user.id;
+    (req.session as any).userName = user.name;
+    res.redirect("/");
+  } else {
+    res.status(401).send("メールアドレスかパスワードが違います。");
+  }
 });
+
+// --- 3. ログアウト（Logout） ---
+app.post("/logout", (req, res) => {
+  req.session.destroy(() => {
+    res.redirect("/login");
+  });
+});
+
+// --- 表示（GET） ---
+app.get("/", async (req, res) => {
+  const userId = (req.session as any).userId;
+  if (!userId) return res.redirect("/login"); // ログインしてなければ飛ばす
+
+  const users = await prisma.user.findMany();
+  res.render("index", { users, myName: (req.session as any).userName });
+});
+
+app.get("/login", (req, res) => res.render("login"));
+app.get("/signup", (req, res) => res.render("signup"));
+
+app.listen(PORT, () => console.log(`Running on http://localhost:${PORT}`));

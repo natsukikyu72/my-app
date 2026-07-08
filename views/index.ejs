@@ -1,25 +1,12 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head><meta charset="UTF-8"><title>ユーザー一覧</title></head>
+  <head>
+  <meta charset="UTF-8">
+  <title>ホーム
+  </title>
+</head>
 <body>
-  <h1>ユーザー一覧</h1>
-  <ul>
-    <% users.forEach(user => { %>
-    <li>
-      <strong><%= user.name %></strong> (<%= user.email %>)<br>
-      所属: <%= user.department || '未設定' %> / 学年: <%= user.grade || '-' %>
-    </li>
-  <% }) %>
-  </ul>
-  <h2>ユーザー追加</h2>
-  <form action="/users" method="post">
-  <input type="email" name="email" placeholder="メールアドレス" required><br>
-  <input type="password" name="password" placeholder="パスワード" required><br>
-  <input type="text" name="name" placeholder="名前" required><br>
-  <input type="text" name="department" placeholder="学部・学科"><br>
-  <input type="number" name="grade" placeholder="学年"><br>
-  <button type="submit">登録</button>
-</form>
-  </form>
+<h1>こんにちは、<%= myName %> さん</h1>
+<form action="/logout" method="post"><button type="submit">ログアウト</button></form>
 </body>
 </html>
