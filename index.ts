@@ -33,7 +33,10 @@ app.post("/signup", async (req, res) => {
   // --- ドメインチェックを追加 ---
   // 文字列の最後が "@keio.jp" で終わっているか確認するのじゃ
   if (!email.endsWith("@keio.jp")) {
-    return res.status(400).send("keio.jp のメールアドレスのみ登録可能です。");
+    return res.status(400).send(`
+    <p>keio.jp のメールアドレスのみ登録可能ですぞ。</p>
+    <a href="/signup">登録画面に戻る</a>
+  `);
   }
   // -------------------------
 
@@ -46,7 +49,10 @@ app.post("/signup", async (req, res) => {
     res.redirect("/login");
   } catch (e) {
     console.error(e); 
-    res.status(400).send("登録に失敗しました");
+    res.status(400).send(`
+    <p>登録に失敗しました（メール重複など）。</p>
+    <a href="/signup">登録画面に戻る</a>
+  `);
   }
 });
 
@@ -63,7 +69,10 @@ app.post("/login", async (req, res) => {
     (req.session as any).userName = user.name;
     res.redirect("/");
   } else {
-    res.status(401).send("メールアドレスかパスワードが違います。");
+    res.status(401).send(`
+    <p>メールアドレスかパスワードが違います。</p>
+    <a href="/login">ログイン画面に戻る</a>
+  `);
   }
 });
 
