@@ -45,6 +45,7 @@ app.post("/signup", async (req, res) => {
     });
     res.redirect("/login");
   } catch (e) {
+    console.error(e); 
     res.status(400).send("登録に失敗しました");
   }
 });
