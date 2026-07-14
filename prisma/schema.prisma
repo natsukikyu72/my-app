@@ -20,13 +20,15 @@ model User {
   department String?
   grade      Int?
 
-  listings   Listing[]    
+  listings Listing[] @relation("SellerListing")   
 
   purchases Listing[] @relation("BuyerListing")
 
   buyerChats  ChatRoom[] @relation("BuyerChat")
 
   sellerChats ChatRoom[] @relation("SellerChat")
+
+  messages Message[] @relation("UserMessages")
 }
 
 model BookMaster {
@@ -65,10 +67,17 @@ model Listing {
   updatedAt   DateTime @updatedAt
 
   sellerId    Int
-  seller       User @relation(fields: [sellerId], references: [id])
+  seller User @relation("SellerListing", fields: [sellerId], references: [id])
 
   bookId      Int
   book         BookMaster @relation(fields: [bookId], references: [id])
+
+  buyerId Int?
+
+  buyer User? @relation("BuyerListing", fields: [buyerId], references: [id]
+
+  chatRooms ChatRoom[]
+  )
 }
 
 model ChatRoom {
@@ -95,7 +104,7 @@ model Message {
   chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id])
 
   senderId   Int
-  sender     User @relation(fields: [senderId], references: [id])
+  sender     User @relation("UserMessages", fields: [senderId], references: [id])
 
   content    String
 
