@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>教科書を出品</title>
+</head>
+<body>
+
+<h1>教科書を出品する</h1>
+
+<form action="/listing" method="post">
+
+    <p>教科書</p>
+
+    <select name="bookId">
+
+        <% books.forEach(book => { %>
+
+            <option value="<%= book.id %>">
+
+                <%= book.title %>
+                （<%= book.courseName %>）
+
+            </option>
+
+        <% }) %>
+
+    </select>
+
+    <br><br>
+
+    <p>販売価格</p>
+
+    <input
+        type="number"
+        name="price"
+        required>
+
+    <br><br>
+
+    <p>状態</p>
+
+    <select name="condition">
+
+        <option>新品同様</option>
+        <option>ほぼ新品</option>
+        <option>書き込みあり</option>
+        <option>傷・汚れあり</option>
+
+    </select>
+
+    <br><br>
+
+    <p>写真URL（後で画像アップロードに変更予定）</p>
+
+    <input
+        type="text"
+        name="imageUrl">
+
+    <br><br>
+
+    <button type="submit">
+        出品する
+    </button>
+
+</form>
+
+<br>
+
+<a href="/">戻る</a>
+
+</body>
+</html>

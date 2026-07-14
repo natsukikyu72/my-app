@@ -18,5 +18,37 @@ model User {
   password   String
   name       String
   department String?
-  grade      Int?    
+  grade      Int?
+
+  listings   Listing[]    
+}
+
+model BookMaster {
+  id            Int      @id @default(autoincrement())
+
+  title         String
+  author        String?
+  publisher     String?
+  isbn          String?  @unique
+
+  originalPrice Int
+
+  courseName    String
+
+  listings      Listing[]
+}
+
+model Listing {
+  id          Int      @id @default(autoincrement())
+
+  price       Int
+  condition   String?
+  imageUrl    String?
+  isSold      Boolean  @default(false)
+
+  sellerId    Int
+  seller       User @relation(fields: [sellerId], references: [id])
+
+  bookId      Int
+  book         BookMaster @relation(fields: [bookId], references: [id])
 }

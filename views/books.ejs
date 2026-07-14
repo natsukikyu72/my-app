@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+  <meta charset="UTF-8">
+  <title>教科書</title>
+</head>
+<body>
+<h1>教科書一覧</h1>
+
+<% books.forEach(book => { %>
+  <div>
+    <h3><%= book.title %></h3>
+    <p>授業：<%= book.courseName %></p>
+    <p>定価：<%= book.originalPrice %>円</p>
+  </div>
+  <hr>
+<% }) %>
+</body>
+</html>

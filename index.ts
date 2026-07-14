@@ -19,61 +19,93 @@ app.set("views", "./views");
 app.use(express.urlencoded({ extended: true }));
 
 app.use(session({
-  secret: "secret-key", // 本来は環境変数にするのが安全じゃ
+  secret: "secret-key", 
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 60 * 60 * 1000 } // 1時間有効
+  cookie: { maxAge: 60 * 60 * 1000 } 
 }));
 
 
-// --- 1. 新規登録（Signup） ---
-app.post("/signup", async (req, res) => {
-  const { email, password, name ,department, grade } = req.body;
-
-  // --- ドメインチェックを追加 ---
-  // 文字列の最後が "@keio.jp" で終わっているか確認するのじゃ
-  if (!email.endsWith("@keio.jp")) {
-    return res.status(400).send(`
-    <p>keio.jp のメールアドレスのみ登録可能ですぞ。</p>
-    <a href="/signup">登録画面に戻る</a>
-  `);
+function requireLogin(req: any, res: any, next: any) {
+  if (!req.session.userId) {
+    return res.redirect("/login");
   }
-  // -------------------------
+  next();
+}
+
+// --- 1. 新規登録（Signup） ---
+
+app.get("/signup", (req, res) => {
+  res.render("signup");
+});
+
+app.post("/signup", async (req, res) => {
+  const { email, password, name, department, grade } = req.body;
+
+  if (!email.endsWith("@keio.jp")) {
+    return res.send(`
+      <p>keio.jp のメールアドレスのみ登録できます。</p>
+      <a href="/signup">戻る</a>
+    `);
+  }
 
   const hashedPassword = await bcrypt.hash(password, 10);
+
   try {
     await prisma.user.create({
-      data: { email, password: hashedPassword, name, department: department || null,
-        grade: grade ? parseInt(grade) : null }
+      data: {
+        email,
+        password: hashedPassword,
+        name,
+        department: department || null,
+        grade: grade ? parseInt(grade) : null,
+      },
     });
+
     res.redirect("/login");
   } catch (e) {
-    console.error(e); 
-    res.status(400).send(`
-    <p>登録に失敗しました（メール重複など）。</p>
-    <a href="/signup">登録画面に戻る</a>
-  `);
+    console.error(e);
+
+    res.send(`
+      <p>登録に失敗しました。</p>
+      <a href="/signup">戻る</a>
+    `);
   }
 });
 
 
 // --- 2. ログイン（Login） ---
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  const user = await prisma.user.findUnique({ where: { email } });
 
-  // ユーザーがいて、かつパスワードが合っているか確認する
-  if (user && await bcrypt.compare(password, user.password)) {
-    // セッションにユーザー情報を保存（これで「ログイン中」になる）
-    (req.session as any).userId = user.id;
-    (req.session as any).userName = user.name;
-    res.redirect("/");
-  } else {
-    res.status(401).send(`
-    <p>メールアドレスかパスワードが違います。</p>
-    <a href="/login">ログイン画面に戻る</a>
-  `);
+  const user = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (!user) {
+    return res.send(`
+      <p>メールアドレスまたはパスワードが違います。</p>
+      <a href="/login">戻る</a>
+    `);
   }
+
+  const ok = await bcrypt.compare(password, user.password);
+
+  if (!ok) {
+    return res.send(`
+      <p>メールアドレスまたはパスワードが違います。</p>
+      <a href="/login">戻る</a>
+    `);
+  }
+
+  req.session.userId = user.id;
+  req.session.userName = user.name;
+
+  res.redirect("/");
 });
 
 // --- 3. ログアウト（Logout） ---
@@ -83,16 +115,71 @@ app.post("/logout", (req, res) => {
   });
 });
 
-// --- 表示（GET） ---
-app.get("/", async (req, res) => {
-  const userId = (req.session as any).userId;
-  if (!userId) return res.redirect("/login"); // ログインしてなければ飛ばす
 
-  const users = await prisma.user.findMany();
-  res.render("index", { users, myName: (req.session as any).userName });
+// ==============================
+// ホーム（検索画面）
+// ==============================
+app.get("/", requireLogin, async (req: any, res) => {
+  const keyword = (req.query.keyword as string) || "";
+
+  const books = await prisma.bookMaster.findMany({
+    where: {
+      OR: [
+        {
+          title: {
+            contains: keyword,
+            mode: "insensitive",
+          },
+        },
+        {
+          courseName: {
+            contains: keyword,
+            mode: "insensitive",
+          },
+        },
+      ],
+    },
+    orderBy: {
+      title: "asc",
+    },
+  });
+
+  res.render("index", {
+    myName: req.session.userName,
+    books,
+    keyword,
+  });
 });
 
-app.get("/login", (req, res) => res.render("login"));
-app.get("/signup", (req, res) => res.render("signup"));
+// ==============================
+// 出品画面
+// ==============================
+app.get("/listing/new", requireLogin, async (req, res) => {
+  const books = await prisma.bookMaster.findMany({
+    orderBy: {
+      title: "asc",
+    },
+  });
 
-app.listen(PORT, () => console.log(`Running on http://localhost:${PORT}`));
+  res.render("listing_new", {
+    books,
+  });
+});
+
+// ==============================
+// 教科書マスタ一覧（開発用）
+// ==============================
+app.get("/books", requireLogin, async (req, res) => {
+  const books = await prisma.bookMaster.findMany();
+
+  res.render("books", {
+    books,
+  });
+});
+
+// ==============================
+// サーバ起動
+// ==============================
+app.listen(PORT, () => {
+  console.log(`Running on http://localhost:${PORT}`);
+});
