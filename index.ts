@@ -479,6 +479,58 @@ app.post("/chat/:id/accept", async (req:any,res)=>{
 
 });
 
+// 受け渡し完了 → SOLD
+app.post("/listing/:id/complete", async (req:any, res)=>{
+
+  const userId = req.session.userId;
+
+  if(!userId){
+    return res.redirect("/login");
+  }
+
+
+  const listingId = parseInt(req.params.id);
+
+
+  const listing = await prisma.listing.findUnique({
+    where:{
+      id: listingId
+    }
+  });
+
+
+  if(!listing){
+    return res.status(404).send("商品が存在しません");
+  }
+
+
+  // 出品者または購入者だけ実行可能
+  if(
+    listing.sellerId !== userId &&
+    listing.buyerId !== userId
+  ){
+    return res.status(403).send("権限がありません");
+  }
+
+
+  // RESERVED → SOLD
+  await prisma.listing.update({
+
+    where:{
+      id: listingId
+    },
+
+    data:{
+      status:"SOLD"
+    }
+
+  });
+
+
+  res.redirect(`/listing/${listingId}`);
+
+});
+
 // ==============================
 // 教科書マスタ一覧（開発用）
 // ==============================

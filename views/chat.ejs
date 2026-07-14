@@ -107,6 +107,28 @@
 
 <% } %>
 
+<hr>
+
+<% if (
+  chatRoom.listing.status === "RESERVED" &&
+  (
+    chatRoom.sellerId === myId ||
+    chatRoom.buyerId === myId
+  )
+) { %>
+
+
+<form action="/listing/<%= chatRoom.listing.id %>/complete" method="post">
+
+<button type="submit">
+受け渡し完了
+</button>
+
+</form>
+
+
+<% } %>
+
 
 <a href="/">戻る</a>
 
