@@ -429,6 +429,56 @@ app.post("/chat/:id/message", async (req: any, res) => {
 
 });
 
+app.post("/chat/:id/accept", async (req:any,res)=>{
+
+    const userId = req.session.userId;
+
+    if(!userId){
+        return res.redirect("/login");
+    }
+
+
+    const chatRoomId = parseInt(req.params.id);
+
+
+    const chatRoom = await prisma.chatRoom.findUnique({
+        where:{
+            id:chatRoomId
+        }
+    });
+
+
+    if(!chatRoom){
+        return res.status(404).send("チャットがありません");
+    }
+
+
+    // 出品者本人か確認
+    if(chatRoom.sellerId !== userId){
+        return res.status(403).send("権限がありません");
+    }
+
+
+    // Listing更新
+
+    await prisma.listing.update({
+
+        where:{
+            id:chatRoom.listingId
+        },
+
+        data:{
+            status:"RESERVED",
+            buyerId:chatRoom.buyerId
+        }
+
+    });
+
+
+    res.redirect(`/chat/${chatRoomId}`);
+
+});
+
 // ==============================
 // 教科書マスタ一覧（開発用）
 // ==============================

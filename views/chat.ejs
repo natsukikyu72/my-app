@@ -75,7 +75,6 @@
 <hr>
 
 
-<!-- 次のステップでPOST処理を作る -->
 
 <form action="/chat/<%= chatRoom.id %>/message" method="post">
 
@@ -92,6 +91,21 @@
 
 </form>
 <br>
+
+<% if (chatRoom.sellerId === myId 
+    && chatRoom.listing.status === "SELLING") { %>
+
+
+<form action="/chat/<%= chatRoom.id %>/accept" method="post">
+
+<button type="submit">
+この人と取引する
+</button>
+
+</form>
+
+
+<% } %>
 
 
 <a href="/">戻る</a>
