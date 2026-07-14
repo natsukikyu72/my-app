@@ -190,6 +190,45 @@ app.post("/listing", requireLogin, async (req: any, res) => {
   res.redirect("/");
 });
 
+app.get("/listing/:id", requireLogin, async (req: any, res) => {
+
+    const id = parseInt(req.params.id);
+
+    const listing = await prisma.listing.findUnique({
+        where: {
+            id
+        },
+        include: {
+            book: true,
+            seller: true
+        }
+    });
+
+    if (!listing) {
+        return res.status(404).send("出品が見つかりません");
+    }
+
+    res.render("listing_detail", {
+        listing,
+        myId: req.session.userId
+    });
+
+});
+
+
+app.post("/chat/start/:listingId", requireLogin, async (req: any, res) => {
+
+    const listingId = parseInt(req.params.listingId);
+
+    // まだ未実装
+    res.send(`
+        購入相談（チャット）はこれから実装します。<br><br>
+        Listing ID = ${listingId}<br>
+        User ID = ${req.session.userId}
+    `);
+
+});
+
 // ==============================
 // 教科書マスタ一覧（開発用）
 // ==============================

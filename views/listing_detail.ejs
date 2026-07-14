@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>商品詳細</title>
+</head>
+
+<body>
+
+<h1><%= listing.book.title %></h1>
+
+<p>授業：<%= listing.book.courseName %></p>
+
+<p>定価：<%= listing.book.originalPrice %>円</p>
+
+<p>出品価格：<%= listing.price %>円</p>
+
+<p>状態：<%= listing.condition ?? "未設定" %></p>
+
+<p>出品者：<%= listing.seller.name %></p>
+
+<% if (listing.imageUrl) { %>
+
+<img src="<%= listing.imageUrl %>" width="300">
+
+<% } else { %>
+
+    <p>画像は登録されていません。</p>
+
+<% } %>
+
+<% if (listing.sellerId !== myId && listing.status === "SELLING") { %>
+
+<form action="/chat/start/<%= listing.id %>" method="post">
+    <button type="submit">
+        購入相談する
+    </button>
+</form>
+
+<% } %>
+
+<% if (listing.status === "RESERVED") { %>
+
+<p style="color: orange;">
+    現在取引中です
+</p>
+
+<% } %>
+
+<% if (listing.status === "SOLD") { %>
+
+<p style="color: red;">
+    売却済みです
+</p>
+
+<% } %>
+
+<hr>
+
+<a href="/">← 戻る</a>
+
+</body>
+</html>

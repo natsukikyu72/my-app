@@ -57,7 +57,10 @@
             <p>状態：<%= listing.condition ?? "未設定" %></p>
 
             <p>出品者：<%= listing.seller.name %></p>
-
+            
+            <a href="/listing/<%= listing.id %>">
+              <button>詳細を見る</button>
+            </a>
         </div>
 
     <% }) %>

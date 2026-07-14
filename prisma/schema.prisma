@@ -21,6 +21,12 @@ model User {
   grade      Int?
 
   listings   Listing[]    
+
+  purchases Listing[] @relation("BuyerListing")
+
+  buyerChats  ChatRoom[] @relation("BuyerChat")
+
+  sellerChats ChatRoom[] @relation("SellerChat")
 }
 
 model BookMaster {
@@ -38,13 +44,21 @@ model BookMaster {
   listings      Listing[]
 }
 
+enum ListingStatus {
+  SELLING
+  RESERVED
+  SOLD
+}
+
+
 model Listing {
   id          Int      @id @default(autoincrement())
 
   price       Int
   condition   String?
   imageUrl    String?
-  isSold      Boolean  @default(false)
+  
+  status      ListingStatus @default(SELLING)
 
   createdAt   DateTime @default(now())
 
@@ -55,4 +69,35 @@ model Listing {
 
   bookId      Int
   book         BookMaster @relation(fields: [bookId], references: [id])
+}
+
+model ChatRoom {
+  id        Int      @id @default(autoincrement())
+
+  listingId Int
+  listing   Listing @relation(fields: [listingId], references: [id])
+
+  buyerId   Int
+  buyer     User @relation("BuyerChat", fields: [buyerId], references: [id])
+
+  sellerId  Int
+  seller    User @relation("SellerChat", fields: [sellerId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  messages  Message[]
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+
+  chatRoomId Int
+  chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id])
+
+  senderId   Int
+  sender     User @relation(fields: [senderId], references: [id])
+
+  content    String
+
+  createdAt  DateTime @default(now())
 }
