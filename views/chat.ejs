@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+<meta charset="UTF-8">
+<title>購入相談</title>
+</head>
+
+
+<body>
+
+<h1>購入相談</h1>
+
+
+<h2>
+<%= chatRoom.listing.book.title %>
+</h2>
+
+<p>
+授業：
+<%= chatRoom.listing.book.courseName %>
+</p>
+
+
+<hr>
+
+
+<h2>メッセージ</h2>
+
+
+<div>
+
+<% if (chatRoom.messages.length === 0) { %>
+
+<p>
+まだメッセージはありません
+</p>
+
+
+<% } %>
+
+
+
+<% chatRoom.messages.forEach(message => { %>
+
+
+<div>
+
+<strong>
+<%= message.sender.name %>
+</strong>
+
+<br>
+
+<%= message.content %>
+
+<br>
+
+<small>
+<%= message.createdAt %>
+</small>
+
+
+</div>
+
+<hr>
+
+
+<% }) %>
+
+
+</div>
+
+
+<hr>
+
+
+<!-- 次のステップでPOST処理を作る -->
+
+<form action="/chat/<%= chatRoom.id %>/message" method="post">
+
+<input 
+    type="text"
+    name="content"
+    placeholder="メッセージ入力"
+    required
+>
+
+<button type="submit">
+送信
+</button>
+
+</form>
+<br>
+
+
+<a href="/">戻る</a>
+
+</body>
+</html>
