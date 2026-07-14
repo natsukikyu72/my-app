@@ -29,6 +29,8 @@
 
 <% } %>
 
+
+
 <% if (listing.sellerId !== myId && listing.status === "SELLING") { %>
 
 <form action="/chat/start/<%= listing.id %>" method="post">
@@ -52,6 +54,69 @@
 <p style="color: red;">
     売却済みです
 </p>
+
+<% } %>
+
+
+<% if (listing.sellerId === myId) { %>
+
+<hr>
+
+<h2>購入相談一覧</h2>
+
+
+<% if (listing.chatRooms.length === 0) { %>
+
+<p>
+まだ購入相談はありません。
+</p>
+
+
+<% } else { %>
+
+
+<% listing.chatRooms.forEach(chat => { %>
+
+
+<div>
+
+<p>
+購入希望者：
+<%= chat.buyer.name %>
+</p>
+
+
+<% if (chat.messages.length > 0) { %>
+
+<p>
+最新メッセージ：
+<%= chat.messages[0].content %>
+</p>
+
+<% } else { %>
+
+<p>
+まだメッセージはありません。
+</p>
+
+<% } %>
+
+
+<a href="/chat/<%= chat.id %>">
+チャットを見る
+</a>
+
+
+</div>
+
+<hr>
+
+
+<% }) %>
+
+
+<% } %>
+
 
 <% } %>
 

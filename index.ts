@@ -195,14 +195,28 @@ app.get("/listing/:id", requireLogin, async (req: any, res) => {
     const id = parseInt(req.params.id);
 
     const listing = await prisma.listing.findUnique({
-        where: {
-            id
-        },
-        include: {
-            book: true,
-            seller: true
+        where:{
+      id
+    },
+
+    include:{
+      book:true,
+      seller:true,
+
+      chatRooms:{
+        include:{
+          buyer:true,
+          messages:{
+            orderBy:{
+              createdAt:"desc"
+            },
+            take:1
+          }
         }
-    });
+      }
+    }
+
+});
 
     if (!listing) {
         return res.status(404).send("出品が見つかりません");
