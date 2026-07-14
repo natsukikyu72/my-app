@@ -202,6 +202,7 @@ app.get("/listing/:id", requireLogin, async (req: any, res) => {
     include:{
       book:true,
       seller:true,
+      reviews:true,
 
       chatRooms:{
         include:{
@@ -528,6 +529,105 @@ app.post("/listing/:id/complete", async (req:any, res)=>{
 
 
   res.redirect(`/listing/${listingId}`);
+
+});
+
+
+app.post("/review", requireLogin, async(req:any, res)=>{
+
+  const userId = req.session.userId;
+
+  const {
+    listingId,
+    rating,
+    comment
+  } = req.body;
+
+
+  const listing = await prisma.listing.findUnique({
+
+    where:{
+      id: Number(listingId)
+    }
+
+  });
+
+
+  if(!listing){
+    return res.status(404).send("商品がありません");
+  }
+
+
+  // 取引関係者か確認
+  if(
+    listing.sellerId !== userId &&
+    listing.buyerId !== userId
+  ){
+    return res.status(403).send("評価できません");
+  }
+
+
+  // 相手を決定
+  const reviewedId =
+    listing.sellerId === userId
+      ? listing.buyerId
+      : listing.sellerId;
+
+
+  if(!reviewedId){
+    return res.status(400).send("購入者が設定されていません");
+  }
+
+
+  await prisma.review.create({
+
+    data:{
+      listingId: Number(listingId),
+
+      reviewerId: userId,
+
+      reviewedId: reviewedId,
+
+      rating: Number(rating),
+
+      comment: comment || null
+    }
+
+  });
+
+
+  res.redirect(`/listing/${listingId}`);
+
+});
+
+app.get("/review/new/:listingId", requireLogin, async(req:any, res)=>{
+
+  const listingId = parseInt(req.params.listingId);
+
+
+  const listing = await prisma.listing.findUnique({
+
+    where:{
+      id: listingId
+    },
+
+    include:{
+      seller:true,
+      buyer:true,
+      book:true
+    }
+
+  });
+
+
+  if(!listing){
+    return res.status(404).send("商品がありません");
+  }
+
+
+  res.render("review_new",{
+    listing
+  });
 
 });
 

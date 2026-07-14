@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+<meta charset="UTF-8">
+<title>評価</title>
+</head>
+
+<body>
+
+
+<h1>
+<%= listing.book.title %> の評価
+</h1>
+
+
+<form action="/review" method="post">
+
+
+<input 
+type="hidden"
+name="listingId"
+value="<%= listing.id %>"
+>
+
+
+<label>
+評価
+</label>
+
+<select name="rating">
+
+<option value="5">
+★★★★★
+</option>
+
+<option value="4">
+★★★★
+</option>
+
+<option value="3">
+★★★
+</option>
+
+<option value="2">
+★★
+</option>
+
+<option value="1">
+★
+</option>
+
+</select>
+
+
+<br>
+
+
+<textarea
+name="comment"
+placeholder="コメント">
+</textarea>
+
+
+<br>
+
+
+<button>
+送信
+</button>
+
+
+</form>
+
+
+</body>
+
+</html>

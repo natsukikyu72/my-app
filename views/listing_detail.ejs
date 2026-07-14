@@ -44,10 +44,12 @@
 <% if(
   listing.status === "RESERVED" && listing.buyerId === myId
 ){ %>
+<form action="/chat/start/<%= listing.id %>" method="post">
+    <button type="submit">
+        取引中のチャットを見る
+    </button>
+</form>
 
-<a href="/chat/<%= chat.id %>">
-取引チャットを見る
-</a>
 
 <% } %>
 
@@ -64,6 +66,20 @@
 <p style="color: red;">
     売却済みです
 </p>
+
+<% } %>
+
+<% if (
+    listing.status === "SOLD" &&
+    (listing.sellerId === myId || listing.buyerId === myId) &&
+    listing.reviews.length === 0
+) { %>
+
+<hr>
+
+<a href="/review/new/<%= listing.id %>">
+    評価する
+</a>
 
 <% } %>
 
