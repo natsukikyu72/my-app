@@ -1,62 +1,16 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>教科書フリマ</title>
+    <head>
+  <meta charset="UTF-8">
+  <title>ログイン</title>
 </head>
 <body>
-
-<h2>こんにちは、<%= myName %> さん</h2>
-
-<form action="/logout" method="post">
-    <button type="submit">ログアウト</button>
+<h1>ログイン</h1>
+<form action="/login" method="post">
+  <input type="email" name="email" placeholder="メール" required><br>
+  <input type="password" name="password" placeholder="パスワード" required><br>
+  <button type="submit">ログイン</button>
 </form>
-
-<hr>
-
-<h2>教科書検索</h2>
-
-<form action="/" method="get">
-    <input
-        type="text"
-        name="keyword"
-        value="<%= keyword %>"
-        placeholder="教科書名・授業名を入力">
-
-    <button type="submit">検索</button>
-</form>
-
-<p>
-    <a href="/listing/new">
-        <button>教科書を出品する</button>
-    </a>
-</p>
-
-<hr>
-
-<h2>教科書一覧</h2>
-
-<% if (books.length === 0) { %>
-
-    <p>該当する教科書がありません。</p>
-
-<% } else { %>
-
-    <% books.forEach(book => { %>
-
-        <div style="border:1px solid black; padding:10px; margin-bottom:10px;">
-
-            <h3><%= book.title %></h3>
-
-            <p>授業：<%= book.courseName %></p>
-
-            <p>定価：<%= book.originalPrice %>円</p>
-
-        </div>
-
-    <% }) %>
-
-<% } %>
-
+<a href="/signup">新規登録はこちら</a>
 </body>
 </html>
