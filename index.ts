@@ -120,34 +120,38 @@ app.post("/logout", (req, res) => {
 // ホーム（検索画面）
 // ==============================
 app.get("/", requireLogin, async (req: any, res) => {
+
   const keyword = (req.query.keyword as string) || "";
 
-  const books = await prisma.bookMaster.findMany({
+  const listings = await prisma.listing.findMany({
     where: {
-      OR: [
-        {
-          title: {
-            contains: keyword,
-            mode: "insensitive",
+      book: {
+        OR: [
+          {
+            title: {
+              contains: keyword,
+              mode: "insensitive"
+            }
           },
-        },
-        {
-          courseName: {
-            contains: keyword,
-            mode: "insensitive",
-          },
-        },
-      ],
+          {
+            courseName: {
+              contains: keyword,
+              mode: "insensitive"
+            }
+          }
+        ]
+      }
     },
-    orderBy: {
-      title: "asc",
-    },
+    include: {
+      book: true,
+      seller: true
+    }
   });
 
   res.render("index", {
     myName: req.session.userName,
-    books,
-    keyword,
+    listings,
+    keyword
   });
 });
 
@@ -164,6 +168,26 @@ app.get("/listing/new", requireLogin, async (req, res) => {
   res.render("listing_new", {
     books,
   });
+});
+
+// ==============================
+// 出品処理
+// ==============================
+app.post("/listing", requireLogin, async (req: any, res) => {
+
+  const { bookId, price, condition, imageUrl } = req.body;
+
+  await prisma.listing.create({
+    data: {
+      sellerId: req.session.userId,
+      bookId: parseInt(bookId),
+      price: parseInt(price),
+      condition: condition || null,
+      imageUrl: imageUrl || null
+    }
+  });
+
+  res.redirect("/");
 });
 
 // ==============================

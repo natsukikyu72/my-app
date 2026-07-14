@@ -42,15 +42,21 @@
 
 <% } else { %>
 
-    <% books.forEach(book => { %>
+    <% listings.forEach(listing => { %>
 
         <div style="border:1px solid black; padding:10px; margin-bottom:10px;">
 
-            <h3><%= book.title %></h3>
+            <h3><%= listing.book.title %></h3>
 
-            <p>授業：<%= book.courseName %></p>
+            <p>授業：<%= listing.book.courseName %></p>
 
-            <p>定価：<%= book.originalPrice %>円</p>
+            <p>出品価格：<%= listing.price %>円</p>
+
+            <p>定価：<%= listing.book.originalPrice %>円</p>
+
+            <p>状態：<%= listing.condition ?? "未設定" %></p>
+
+            <p>出品者：<%= listing.seller.name %></p>
 
         </div>
 
