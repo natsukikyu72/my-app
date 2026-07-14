@@ -41,6 +41,16 @@
 
 <% } %>
 
+<% if(
+  listing.status === "RESERVED" && listing.buyerId === myId
+){ %>
+
+<a href="/chat/<%= chat.id %>">
+取引チャットを見る
+</a>
+
+<% } %>
+
 <% if (listing.status === "RESERVED") { %>
 
 <p style="color: orange;">
