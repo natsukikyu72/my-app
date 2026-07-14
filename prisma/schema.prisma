@@ -74,10 +74,9 @@ model Listing {
 
   buyerId Int?
 
-  buyer User? @relation("BuyerListing", fields: [buyerId], references: [id]
+  buyer User? @relation("BuyerListing", fields: [buyerId], references: [id])
 
   chatRooms ChatRoom[]
-  )
 }
 
 model ChatRoom {
