@@ -3,79 +3,80 @@
 
 <head>
 <meta charset="UTF-8">
-<title>
-<%= user.name %>
-</title>
+<title><%= user.name %></title>
+<link rel="stylesheet" href="/css/style.css">
 </head>
-
 
 <body>
 
+<div class="nav">
 
 <h1>
-<%= user.name %> さん
+
+<%= user.name %>
+
 </h1>
 
+<a href="/">ホーム</a>
 
-<h2>
-評価
-</h2>
+</div>
 
+<div class="card">
 
 <%
-let average = 0;
 
-if(user.reviewsReceived.length > 0){
+let avg=0;
 
-  const sum =
-  user.reviewsReceived.reduce(
-    (a,r)=>a+r.rating,
-    0
-  );
+if(user.reviewsReceived.length){
 
-  average =
-  (sum / user.reviewsReceived.length)
-  .toFixed(1);
+avg=(user.reviewsReceived.reduce((a,r)=>a+r.rating,0)
+/user.reviewsReceived.length).toFixed(1);
 
 }
+
 %>
 
+<h2>
+
+評価
+
+</h2>
+
+<p>
 
 <a href="/user/<%= user.id %>/reviews">
 
-⭐ <%= average %>
-(
-<%= user.reviewsReceived.length %>件
-)
+⭐ <%= avg %>
+
+（<%= user.reviewsReceived.length %>件）
+
 </a>
 
+</p>
 
-
-<hr>
-
-
+</div>
 
 <h2>
-出品一覧
-</h2>
 
+出品一覧
+
+</h2>
 
 <% if(user.listings.length===0){ %>
 
-<p>
-出品はありません
-</p>
+<div class="card">
 
+出品はありません
+
+</div>
 
 <% } %>
 
-
-
 <% user.listings.forEach(listing=>{ %>
 
+<div class="card">
 
-<div>
-
+<h3>
 
 <a href="/listing/<%= listing.id %>">
 
@@ -83,28 +84,25 @@ if(user.reviewsReceived.length > 0){
 
 </a>
 
+</h3>
 
 <p>
+
 価格：
 <%= listing.price %>円
-</p>
 
+</p>
 
 <p>
+
 状態：
 <%= listing.status %>
-</p>
 
+</p>
 
 </div>
 
-
-<hr>
-
-
 <% }) %>
-
-
 
 </body>
 </html>

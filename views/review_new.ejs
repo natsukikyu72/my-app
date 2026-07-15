@@ -2,76 +2,73 @@
 <html lang="ja">
 
 <head>
+
 <meta charset="UTF-8">
-<title>評価</title>
+
+<title>評価する</title>
+
+<link rel="stylesheet" href="/css/style.css">
+
 </head>
 
 <body>
 
-
 <h1>
-<%= listing.book.title %> の評価
+
+<%= listing.book.title %>
+
+を評価
+
 </h1>
 
+<div class="card">
 
 <form action="/review" method="post">
 
-
-<input 
+<input
 type="hidden"
 name="listingId"
-value="<%= listing.id %>"
->
-
+value="<%= listing.id %>">
 
 <label>
+
 評価
+
 </label>
 
 <select name="rating">
 
-<option value="5">
-★★★★★
-</option>
+<option value="5">★★★★★</option>
 
-<option value="4">
-★★★★
-</option>
+<option value="4">★★★★☆</option>
 
-<option value="3">
-★★★
-</option>
+<option value="3">★★★☆☆</option>
 
-<option value="2">
-★★
-</option>
+<option value="2">★★☆☆☆</option>
 
-<option value="1">
-★
-</option>
+<option value="1">★☆☆☆☆</option>
 
 </select>
 
+<label>
 
-<br>
+コメント
 
+</label>
 
 <textarea
 name="comment"
-placeholder="コメント">
-</textarea>
-
-
-<br>
-
+placeholder="コメントを入力"></textarea>
 
 <button>
-送信
-</button>
 
+送信する
+
+</button>
 
 </form>
 
+</div>
 
 </body>
 

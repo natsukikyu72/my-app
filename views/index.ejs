@@ -1,75 +1,215 @@
 <!DOCTYPE html>
+
 <html lang="ja">
+
 <head>
-    <meta charset="UTF-8">
-    <title>教科書フリマ</title>
+
+<meta charset="UTF-8">
+
+<title>教科書フリマ</title>
+
+<link rel="stylesheet" href="/css/style.css">
+
 </head>
+
 <body>
 
-<h2>こんにちは、<%= myName %> さん</h2>
+<div class="navbar">
 
-<form action="/logout" method="post">
-    <button type="submit">ログアウト</button>
+<div>
+
+<h2>📚 教科書フリマ</h2>
+
+</div>
+
+<div>
+
+こんにちは <b><%= myName %></b> さん
+
+<a href="/user/<%= myId %>">マイページ</a>
+
+<a href="/listing/new">出品</a>
+
+<form
+action="/logout"
+method="post"
+style="display:inline;"
+>
+
+<button>
+ログアウト
+</button>
+
 </form>
 
-<hr>
+</div>
 
-<h2>教科書検索</h2>
+</div>
 
-<a href="/user/<%= myId %>">
-マイページ
-</a>
+
+
+<div class="container">
+
+<div class="search-box">
+
+<h2>
+
+🔍 教科書検索
+
+</h2>
 
 <form action="/" method="get">
-    <input
-        type="text"
-        name="keyword"
-        value="<%= keyword %>"
-        placeholder="教科書名・授業名を入力">
 
-    <button type="submit">検索</button>
+<input
+type="text"
+name="keyword"
+value="<%= keyword %>"
+placeholder="教科書名・授業名で検索">
+
+<button>
+
+検索
+
+</button>
+
 </form>
 
-<p>
-    <a href="/listing/new">
-        <button>教科書を出品する</button>
-    </a>
-</p>
+</div>
 
-<hr>
 
-<h2>教科書一覧</h2>
 
-<% if (listings.length === 0) { %>
+<% if(listings.length===0){ %>
 
-    <p>該当する教科書がありません。</p>
+<h3>
 
-<% } else { %>
+該当する商品はありません
 
-    <% listings.forEach(listing => { %>
+</h3>
 
-        <div style="border:1px solid black; padding:10px; margin-bottom:10px;">
+<% }else{ %>
 
-            <h3><%= listing.book.title %></h3>
+<div class="listing-grid">
 
-            <p>授業：<%= listing.book.courseName %></p>
+<% listings.forEach(listing=>{ %>
 
-            <p>出品価格：<%= listing.price %>円</p>
+<div class="card">
 
-            <p>定価：<%= listing.book.originalPrice %>円</p>
+<% if(listing.imageUrl){ %>
 
-            <p>状態：<%= listing.condition ?? "未設定" %></p>
+<img src="<%= listing.imageUrl %>">
 
-            <p>出品者：<%= listing.seller.name %></p>
-            
-            <a href="/listing/<%= listing.id %>">
-              <button>詳細を見る</button>
-            </a>
-        </div>
+<% }else{ %>
 
-    <% }) %>
+<div class="no-image">
+
+画像なし
+
+</div>
 
 <% } %>
 
+<div class="card-body">
+
+<h3>
+
+<%= listing.book.title %>
+
+</h3>
+
+<p>
+
+📖 <%= listing.book.courseName %>
+
+</p>
+
+<p class="price">
+
+¥<%= listing.price.toLocaleString() %>
+
+</p>
+
+<p class="original">
+
+定価 ¥<%= listing.book.originalPrice.toLocaleString() %>
+
+</p>
+
+<p>
+
+状態：
+
+<%= listing.condition ?? "未設定" %>
+
+</p>
+
+<p class="seller">
+
+👤
+
+<a href="/user/<%= listing.seller.id %>">
+
+<%= listing.seller.name %>
+
+</a>
+
+</p>
+
+<% if(listing.status==="SELLING"){ %>
+
+<span class="status selling">
+
+販売中
+
+</span>
+
+<% } %>
+
+<% if(listing.status==="RESERVED"){ %>
+
+<span class="status reserved">
+
+取引中
+
+</span>
+
+<% } %>
+
+<% if(listing.status==="SOLD"){ %>
+
+<span class="status sold">
+
+売却済み
+
+</span>
+
+<% } %>
+
+</div>
+
+<div class="card-footer">
+
+<a href="/listing/<%= listing.id %>">
+
+<button>
+
+詳細を見る
+
+</button>
+
+</a>
+
+</div>
+
+</div>
+
+<% }) %>
+
+</div>
+
+<% } %>
+
+</div>
+
 </body>
+
 </html>

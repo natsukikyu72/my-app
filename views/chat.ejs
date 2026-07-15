@@ -4,47 +4,59 @@
 <head>
 <meta charset="UTF-8">
 <title>購入相談</title>
+<link rel="stylesheet" href="/css/style.css">
 </head>
-
 
 <body>
 
+<div class="nav">
+
 <h1>購入相談</h1>
 
+<a href="/listing/<%= chatRoom.listing.id %>">
+
+商品へ戻る
+
+</a>
+
+</div>
+
+<div class="card">
 
 <h2>
+
 <%= chatRoom.listing.book.title %>
+
 </h2>
 
 <p>
+
 授業：
 <%= chatRoom.listing.book.courseName %>
+
 </p>
 
+</div>
 
-<hr>
+<h2>
 
+メッセージ
 
-<h2>メッセージ</h2>
+</h2>
 
+<% if(chatRoom.messages.length===0){ %>
 
-<div>
+<div class="card">
 
-<% if (chatRoom.messages.length === 0) { %>
-
-<p>
 まだメッセージはありません
-</p>
 
+</div>
 
 <% } %>
 
+<% chatRoom.messages.forEach(message=>{ %>
 
-
-<% chatRoom.messages.forEach(message => { %>
-
-
-<div>
+<div class="message <%= message.senderId===myId?'mine':'' %>">
 
 <strong>
 
@@ -56,87 +68,66 @@
 
 </strong>
 
-<br>
+<br><br>
 
 <%= message.content %>
 
-<br>
+<br><br>
 
-<small>
-<%= message.createdAt %>
-</small>
+<div class="small">
 
+<%= message.createdAt.toLocaleString() %>
 
 </div>
 
-<hr>
-
+</div>
 
 <% }) %>
 
-
-</div>
-
-
-<hr>
-
-
-
 <form action="/chat/<%= chatRoom.id %>/message" method="post">
 
-<input 
-    type="text"
-    name="content"
-    placeholder="メッセージ入力"
-    required
->
+<textarea
+name="content"
+placeholder="メッセージを入力"
+required></textarea>
 
-<button type="submit">
+<button>
+
 送信
+
 </button>
 
 </form>
+
 <br>
 
-<% if (chatRoom.sellerId === myId 
-    && chatRoom.listing.status === "SELLING") { %>
-
+<% if(chatRoom.sellerId===myId && chatRoom.listing.status==="SELLING"){ %>
 
 <form action="/chat/<%= chatRoom.id %>/accept" method="post">
 
-<button type="submit">
+<button>
+
 この人と取引する
+
 </button>
 
 </form>
 
-
 <% } %>
 
-<hr>
-
-<% if (
-  chatRoom.listing.status === "RESERVED" &&
-  (
-    chatRoom.sellerId === myId ||
-    chatRoom.buyerId === myId
-  )
-) { %>
-
+<% if(chatRoom.listing.status==="RESERVED"){ %>
 
 <form action="/listing/<%= chatRoom.listing.id %>/complete" method="post">
 
-<button type="submit">
+<button>
+
 受け渡し完了
+
 </button>
 
 </form>
 
-
 <% } %>
-
-
-<a href="/">戻る</a>
 
 </body>
 </html>

@@ -1,73 +1,82 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-    <meta charset="UTF-8">
-    <title>教科書を出品</title>
+<meta charset="UTF-8">
+<title>教科書を出品</title>
+
+<link rel="stylesheet" href="/css/style.css">
+
 </head>
+
 <body>
 
-<h1>教科書を出品する</h1>
+<h1>教科書を出品</h1>
+
+<div class="card">
 
 <form action="/listing" method="post">
 
-    <p>教科書</p>
+<label>教科書</label>
 
-    <select name="bookId">
+<select name="bookId">
 
-        <% books.forEach(book => { %>
+<% books.forEach(book=>{ %>
 
-            <option value="<%= book.id %>">
+<option value="<%= book.id %>">
 
-                <%= book.title %>
-                （<%= book.courseName %>）
+<%= book.title %>
 
-            </option>
+（<%= book.courseName %>）
 
-        <% }) %>
+</option>
 
-    </select>
+<% }) %>
 
-    <br><br>
+</select>
 
-    <p>出品価格</p>
+<label>販売価格</label>
 
-    <input
-        type="number"
-        name="price"
-        required>
+<input
+type="number"
+name="price"
+required>
 
-    <br><br>
+<label>商品の状態</label>
 
-    <p>状態</p>
+<select name="condition">
 
-    <select name="condition">
+<option>新品同様</option>
 
-        <option>新品同様</option>
-        <option>ほぼ新品</option>
-        <option>書き込みあり</option>
-        <option>傷・汚れあり</option>
+<option>ほぼ新品</option>
 
-    </select>
+<option>書き込みあり</option>
 
-    <br><br>
+<option>傷・汚れあり</option>
 
-    <p>写真URL（後で画像アップロードに変更予定）</p>
+</select>
 
-    <input
-        type="text"
-        name="imageUrl">
+<label>画像URL</label>
 
-    <br><br>
+<input
+type="text"
+name="imageUrl"
+placeholder="画像アップロード実装予定">
 
-    <button type="submit">
-        出品する
-    </button>
+<button>
+
+出品する
+
+</button>
 
 </form>
 
+</div>
+
 <br>
 
-<a href="/">戻る</a>
+<a href="/">← ホームへ戻る</a>
 
 </body>
+
 </html>

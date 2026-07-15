@@ -17,6 +17,7 @@ const PORT = process.env.PORT || 8888;
 app.set("view engine", "ejs");
 app.set("views", "./views");
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
 
 app.use(session({
   secret: "secret-key", 
