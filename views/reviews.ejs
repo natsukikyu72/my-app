@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+<meta charset="UTF-8">
+<title>評価一覧</title>
+</head>
+
+
+<body>
+
+<h1>評価一覧</h1>
+
+
+<% if(reviews.length === 0){ %>
+
+<p>
+まだ評価はありません。
+</p>
+
+
+<% } else { %>
+
+
+<% reviews.forEach(review => { %>
+
+
+<div>
+
+<h3>
+<%= review.reviewer.name %> さんからの評価
+</h3>
+
+
+<p>
+評価：
+<%= "★".repeat(review.rating) %>
+</p>
+
+
+<% if(review.comment){ %>
+
+<p>
+<%= review.comment %>
+</p>
+
+<% } %>
+
+
+<p>
+<small>
+<%= review.createdAt.toLocaleDateString() %>
+</small>
+</p>
+
+
+</div>
+
+
+<hr>
+
+
+<% }) %>
+
+
+<% } %>
+
+
+<a href="javascript:history.back()">
+戻る
+</a>
+
+
+</body>
+
+</html>
