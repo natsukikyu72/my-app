@@ -2,72 +2,177 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>教科書を出品</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教科書を出品する | 慶應教科書フリマ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Serif+JP:wght@600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        keio: {
+                            blue: '#002F6C',
+                            red: '#9E0B0E',
+                            gold: '#C5A059',
+                            dark: '#0B132B'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans JP', 'sans-serif'],
+                        serif: ['Noto Serif JP', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .keio-stripe {
+            background: linear-gradient(to right, #002F6C 42%, #9E0B0E 42%, #9E0B0E 58%, #002F6C 58%);
+        }
+    </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
 
-<h1>教科書を出品する</h1>
+    <!-- Top Tricolor Pennant Stripe -->
+    <div class="keio-stripe h-1.5 w-full sticky top-0 z-50"></div>
 
-<form action="/listing" method="post">
+    <!-- Navigation Header -->
+    <header class="bg-white border-b border-slate-100 shadow-sm sticky top-1.5 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2.5 group">
+                <div class="w-10 h-10 bg-gradient-to-br from-keio-blue to-keio-red rounded-lg flex items-center justify-center text-white shadow-md transition-transform group-hover:scale-105">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 20L10 14M20 4L14 10" stroke-linecap="round"/>
+                        <path d="M10 14L13 11L11 9L8 12L7 15L10 14Z" fill="currentColor" opacity="0.3"/>
+                        <path d="M14 10L11 13L13 15L16 12L17 9L14 10Z" fill="currentColor" opacity="0.3"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="font-serif font-extrabold text-base sm:text-lg text-keio-blue leading-tight tracking-wider">
+                        慶應教科書フリマ
+                    </h1>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest -mt-0.5">
+                        Keio Book Loop
+                    </p>
+                </div>
+            </a>
+            <a href="/" class="text-xs font-bold text-slate-500 hover:text-keio-blue flex items-center gap-1 bg-slate-100 px-3 py-2 rounded-lg transition-colors">
+                ← ホームに戻る
+            </a>
+        </div>
+    </header>
 
-    <p>教科書</p>
+    <!-- Form Container -->
+    <main class="flex-grow max-w-2xl w-full mx-auto px-4 py-10">
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden relative">
+            <div class="keio-stripe h-1 w-full absolute top-0 left-0"></div>
+            
+            <div class="p-6 sm:p-8 border-b border-slate-100 bg-gradient-to-b from-slate-50 to-white">
+                <h2 class="font-serif text-xl sm:text-2xl font-extrabold text-keio-blue tracking-wider flex items-center gap-2">
+                    <span class="w-1.5 h-6 bg-keio-red rounded-full"></span>
+                    教科書を出品する
+                </h2>
+                <p class="text-xs text-slate-500 mt-1 font-medium">使わなくなった書籍を塾生に繋ぎましょう。</p>
+            </div>
 
-    <select name="bookId">
+            <form action="/listing" method="post" class="p-6 sm:p-8 space-y-6">
+                
+                <!-- Book Selection -->
+                <div>
+                    <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2">
+                        教科書の選択 <span class="text-keio-red font-bold">*</span>
+                    </label>
+                    <select 
+                        name="bookId"
+                        required
+                        class="w-full pl-4 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-keio-blue focus:bg-white transition-all text-sm text-slate-800 font-semibold"
+                    >
+                        <% books.forEach(book => { %>
+                            <option value="<%= book.id %>">
+                                <%= book.title %> （対象：<%= book.courseName %>）
+                            </option>
+                        <% }) %>
+                    </select>
+                    <p class="text-[10px] text-slate-400 mt-1.5">※ 出品したい教科書がリストにない場合は、管理者にマスター登録をリクエストしてください。</p>
+                </div>
 
-        <% books.forEach(book => { %>
+                <!-- Price Input -->
+                <div>
+                    <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2">
+                        出品価格 (円) <span class="text-keio-red font-bold">*</span>
+                    </label>
+                    <div class="relative rounded-xl shadow-xs">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <span class="text-slate-500 font-bold text-sm">¥</span>
+                        </div>
+                        <input 
+                            type="number" 
+                            name="price" 
+                            required
+                            placeholder="例: 1500"
+                            class="w-full pl-8 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-keio-blue focus:bg-white transition-all text-sm text-slate-800 font-semibold"
+                        >
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1.5">※ 手渡し時のトラブル防止のため、小銭の発生しにくい500円/1,000円単位での出品を推奨します。</p>
+                </div>
 
-            <option value="<%= book.id %>">
+                <!-- Condition Selection -->
+                <div>
+                    <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2">
+                        商品の状態 <span class="text-keio-red font-bold">*</span>
+                    </label>
+                    <select 
+                        name="condition"
+                        required
+                        class="w-full pl-4 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-keio-blue focus:bg-white transition-all text-sm text-slate-800"
+                    >
+                        <option value="新品同様">新品同様（書き込み・折れ全くなし）</option>
+                        <option value="ほぼ新品">ほぼ新品（多少の使用感がある程度）</option>
+                        <option value="書き込みあり">書き込みあり（マーカー、鉛筆書き等あり）</option>
+                        <option value="傷・汚れあり">傷・汚れあり（カバー紛失、折れや汚れが目立つ）</option>
+                    </select>
+                </div>
 
-                <%= book.title %>
-                （<%= book.courseName %>）
+                <!-- Image URL Input -->
+                <div>
+                    <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2">
+                        写真URL（任意）
+                    </label>
+                    <input 
+                        type="text" 
+                        name="imageUrl"
+                        placeholder="https://example.com/book-photo.jpg"
+                        class="w-full pl-4 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-keio-blue focus:bg-white transition-all text-sm text-slate-800 placeholder-slate-400 font-medium"
+                    >
+                    <p class="text-[10px] text-slate-400 mt-1.5">※ 空欄にすると、教科書タイトルからクラシックな大学仕様のブックカバー画像が自動生成されます。</p>
+                </div>
 
-            </option>
+                <!-- Buttons -->
+                <div class="pt-4 flex flex-col sm:flex-row gap-3">
+                    <button 
+                        type="submit"
+                        class="w-full bg-keio-blue hover:bg-slate-900 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-blue-900/10 hover:shadow-xl hover:shadow-blue-900/20 active:scale-[0.98] transition-all text-sm tracking-widest text-center"
+                    >
+                        出品を完了する
+                    </button>
+                    <a 
+                        href="/" 
+                        class="w-full sm:w-1/3 text-center bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3.5 px-4 rounded-xl transition-all text-sm tracking-wide"
+                    >
+                        キャンセル
+                    </a>
+                </div>
 
-        <% }) %>
+            </form>
+        </div>
+    </main>
 
-    </select>
-
-    <br><br>
-
-    <p>出品価格</p>
-
-    <input
-        type="number"
-        name="price"
-        required>
-
-    <br><br>
-
-    <p>状態</p>
-
-    <select name="condition">
-
-        <option>新品同様</option>
-        <option>ほぼ新品</option>
-        <option>書き込みあり</option>
-        <option>傷・汚れあり</option>
-
-    </select>
-
-    <br><br>
-
-    <p>写真URL（後で画像アップロードに変更予定）</p>
-
-    <input
-        type="text"
-        name="imageUrl">
-
-    <br><br>
-
-    <button type="submit">
-        出品する
-    </button>
-
-</form>
-
-<br>
-
-<a href="/">戻る</a>
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-slate-400 text-[10px] tracking-wider">
+        &copy; 2026 慶應教科書フリマ (Keio Book Loop) . All Rights Reserved.<br>
+        <span class="text-[9px] mt-1 inline-block text-slate-300">「実学の精神」に基づき、塾生同士の知の循環をサポートします。</span>
+    </footer>
 
 </body>
 </html>

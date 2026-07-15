@@ -5,6 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "tsx index.ts",
+    "build": "echo 'No build step required'",
     "start": "tsx index.ts",
     "db:dev": "prisma dev",
     "test": "echo \"Error: no test specified\" && exit 1"

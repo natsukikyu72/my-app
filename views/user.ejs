@@ -1,110 +1,183 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-<meta charset="UTF-8">
-<title>
-<%= user.name %>
-</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= user.name %> さんのプロフィール | 慶應教科書フリマ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Serif+JP:wght@600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        keio: {
+                            blue: '#002F6C',
+                            red: '#9E0B0E',
+                            gold: '#C5A059',
+                            dark: '#0B132B'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans JP', 'sans-serif'],
+                        serif: ['Noto Serif JP', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .keio-stripe {
+            background: linear-gradient(to right, #002F6C 42%, #9E0B0E 42%, #9E0B0E 58%, #002F6C 58%);
+        }
+    </style>
 </head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
 
+    <!-- Top Tricolor Pennant Stripe -->
+    <div class="keio-stripe h-1.5 w-full sticky top-0 z-50"></div>
 
-<body>
+    <!-- Navigation Header -->
+    <header class="bg-white border-b border-slate-100 shadow-sm sticky top-1.5 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2.5 group">
+                <div class="w-10 h-10 bg-gradient-to-br from-keio-blue to-keio-red rounded-lg flex items-center justify-center text-white shadow-md transition-transform group-hover:scale-105">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 20L10 14M20 4L14 10" stroke-linecap="round"/>
+                        <path d="M10 14L13 11L11 9L8 12L7 15L10 14Z" fill="currentColor" opacity="0.3"/>
+                        <path d="M14 10L11 13L13 15L16 12L17 9L14 10Z" fill="currentColor" opacity="0.3"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="font-serif font-extrabold text-base sm:text-lg text-keio-blue leading-tight tracking-wider">
+                        慶應教科書フリマ
+                    </h1>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest -mt-0.5">
+                        Keio Book Loop
+                    </p>
+                </div>
+            </a>
+            <a href="/" class="text-xs font-bold text-slate-500 hover:text-keio-blue flex items-center gap-1 bg-slate-100 px-3 py-2 rounded-lg transition-colors">
+                ← フリマホームに戻る
+            </a>
+        </div>
+    </header>
 
+    <!-- Main Profile Page -->
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <!-- Left Column: User Card -->
+            <div class="md:col-span-1 space-y-6">
+                <div class="bg-white rounded-2xl border border-slate-100 shadow-md p-6 text-center relative overflow-hidden">
+                    <div class="keio-stripe h-1 w-full absolute top-0 left-0"></div>
+                    
+                    <!-- Profile avatar placeholder -->
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-keio-blue to-keio-red text-white font-serif font-extrabold text-3xl flex items-center justify-center mx-auto mb-4 shadow-md border-2 border-white">
+                        <%= user.name.substring(0, 1) %>
+                    </div>
 
-<h1>
-<%= user.name %> さん
-</h1>
+                    <h2 class="font-serif font-bold text-xl text-slate-800 mb-1"><%= user.name %> 様</h2>
+                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-widest mb-3">Keio Student</p>
 
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 rounded-full text-xs text-slate-600 font-semibold mb-6">
+                        <%= user.department || "一般学部" %>
+                        <% if(user.grade) { %>
+                            ・ <%= user.grade %>年 (B<%= user.grade %>)
+                        <% } %>
+                    </div>
 
-<h2>
-評価
-</h2>
+                    <div class="border-t border-slate-100 pt-6">
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">塾生総合評価</p>
+                        
+                        <%
+                        let average = 0;
+                        if(user.reviewsReceived.length > 0){
+                          const sum = user.reviewsReceived.reduce((a,r)=>a+r.rating, 0);
+                          average = (sum / user.reviewsReceived.length).toFixed(1);
+                        }
+                        %>
 
+                        <a href="/user/<%= user.id %>/reviews" class="block group p-3 bg-amber-50 hover:bg-amber-100/70 border border-amber-200 rounded-xl transition-all">
+                            <div class="flex items-center justify-center gap-1.5 text-amber-600 mb-1">
+                                <span class="text-xl font-black">★</span>
+                                <span class="text-2xl font-black font-serif text-slate-800"><%= average %></span>
+                            </div>
+                            <span class="text-xs text-slate-500 font-semibold group-hover:text-keio-blue transition-colors">
+                                評価件数: <span class="font-bold underline"><%= user.reviewsReceived.length %> 件</span>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-<%
-let average = 0;
+            <!-- Right Column: Listings -->
+            <div class="md:col-span-2 space-y-6">
+                <div class="bg-white rounded-2xl border border-slate-100 shadow-md p-6 sm:p-8">
+                    <h3 class="font-serif text-lg font-bold text-keio-blue mb-6 pb-2 border-b border-slate-100 flex items-center gap-2">
+                        <span class="w-1.5 h-5 bg-keio-red rounded-full"></span>
+                        出品した教科書一覧
+                    </h3>
 
-if(user.reviewsReceived.length > 0){
+                    <% if(user.listings.length === 0){ %>
+                        <div class="text-center py-12 text-slate-400">
+                            <svg class="w-12 h-12 text-slate-200 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                            </svg>
+                            <p class="text-sm font-medium">現在、出品している教科書はありません。</p>
+                        </div>
+                    <% } else { %>
+                        <div class="space-y-4">
+                            <% user.listings.forEach(listing=>{ %>
+                                <div class="p-4 border border-slate-100 hover:border-slate-200 rounded-xl flex items-center justify-between gap-4 transition-all hover:bg-slate-50/50">
+                                    <div class="flex-grow min-w-0">
+                                        <h4 class="font-bold text-sm sm:text-base text-slate-800 hover:text-keio-blue truncate mb-1">
+                                            <a href="/listing/<%= listing.id %>">
+                                                <%= listing.book.title %>
+                                            </a>
+                                        </h4>
+                                        <p class="text-xs text-keio-blue font-bold flex items-center gap-1">
+                                            <span>価格:</span>
+                                            <span class="text-sm">¥<%= listing.price.toLocaleString() %></span>
+                                        </p>
+                                    </div>
+                                    <div class="flex items-center gap-3 shrink-0">
+                                        <% if (listing.status === "SELLING") { %>
+                                            <span class="bg-emerald-50 text-emerald-700 border border-emerald-100 text-[10px] font-bold px-2 py-1 rounded-full">
+                                                販売中
+                                            </span>
+                                        <% } else if (listing.status === "RESERVED") { %>
+                                            <span class="bg-amber-50 text-amber-700 border border-amber-100 text-[10px] font-bold px-2 py-1 rounded-full animate-pulse">
+                                                取引中
+                                            </span>
+                                        <% } else if (listing.status === "SOLD") { %>
+                                            <span class="bg-slate-100 text-slate-500 border border-slate-200 text-[10px] font-bold px-2 py-1 rounded-full line-through">
+                                                売却済
+                                            </span>
+                                        <% } %>
+                                        
+                                        <a href="/listing/<%= listing.id %>" class="p-2 text-slate-400 hover:text-keio-blue hover:bg-slate-100 rounded-lg transition-colors">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </div>
+                    <% } %>
 
-  const sum =
-  user.reviewsReceived.reduce(
-    (a,r)=>a+r.rating,
-    0
-  );
+                </div>
+            </div>
 
-  average =
-  (sum / user.reviewsReceived.length)
-  .toFixed(1);
+        </div>
+    </main>
 
-}
-%>
-
-
-<a href="/user/<%= user.id %>/reviews">
-
-⭐ <%= average %>
-(
-<%= user.reviewsReceived.length %>件
-)
-</a>
-
-
-
-<hr>
-
-
-
-<h2>
-出品一覧
-</h2>
-
-
-<% if(user.listings.length===0){ %>
-
-<p>
-出品はありません
-</p>
-
-
-<% } %>
-
-
-
-<% user.listings.forEach(listing=>{ %>
-
-
-<div>
-
-
-<a href="/listing/<%= listing.id %>">
-
-<%= listing.book.title %>
-
-</a>
-
-
-<p>
-価格：
-<%= listing.price %>円
-</p>
-
-
-<p>
-状態：
-<%= listing.status %>
-</p>
-
-
-</div>
-
-
-<hr>
-
-
-<% }) %>
-
-
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-slate-400 text-[10px] tracking-wider">
+        &copy; 2026 慶應教科書フリマ (Keio Book Loop) . All Rights Reserved.<br>
+        <span class="text-[9px] mt-1 inline-block text-slate-300">「実学の精神」に基づき、塾生同士の知の循環をサポートします。</span>
+    </footer>
 
 </body>
 </html>
