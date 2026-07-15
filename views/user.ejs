@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+<meta charset="UTF-8">
+<title>
+<%= user.name %>
+</title>
+</head>
+
+
+<body>
+
+
+<h1>
+<%= user.name %> さん
+</h1>
+
+
+<h2>
+評価
+</h2>
+
+
+<%
+let average = 0;
+
+if(user.reviewsReceived.length > 0){
+
+  const sum =
+  user.reviewsReceived.reduce(
+    (a,r)=>a+r.rating,
+    0
+  );
+
+  average =
+  (sum / user.reviewsReceived.length)
+  .toFixed(1);
+
+}
+%>
+
+
+<a href="/user/<%= user.id %>/reviews">
+
+⭐ <%= average %>
+(
+<%= user.reviewsReceived.length %>件
+)
+</a>
+
+
+
+<hr>
+
+
+
+<h2>
+出品一覧
+</h2>
+
+
+<% if(user.listings.length===0){ %>
+
+<p>
+出品はありません
+</p>
+
+
+<% } %>
+
+
+
+<% user.listings.forEach(listing=>{ %>
+
+
+<div>
+
+
+<a href="/listing/<%= listing.id %>">
+
+<%= listing.book.title %>
+
+</a>
+
+
+<p>
+価格：
+<%= listing.price %>円
+</p>
+
+
+<p>
+状態：
+<%= listing.status %>
+</p>
+
+
+</div>
+
+
+<hr>
+
+
+<% }) %>
+
+
+
+</body>
+</html>
