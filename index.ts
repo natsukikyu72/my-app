@@ -150,6 +150,7 @@ app.get("/", requireLogin, async (req: any, res) => {
 
   res.render("index", {
     myName: req.session.userName,
+    myId: req.session.userId,
     listings,
     keyword
   });
@@ -188,6 +189,90 @@ app.post("/listing", requireLogin, async (req: any, res) => {
   });
 
   res.redirect("/");
+});
+
+
+// ==============================
+// ユーザープロフィール
+// ==============================
+app.get("/user/:id", requireLogin, async(req:any, res)=>{
+
+  const userId = parseInt(req.params.id);
+
+
+  const user = await prisma.user.findUnique({
+
+    where:{
+      id:userId
+    },
+
+    include:{
+
+      listings:{
+        include:{
+          book:true
+        },
+
+        orderBy:{
+          createdAt:"desc"
+        }
+      },
+
+      reviewsReceived:{
+        include:{
+          reviewer:true
+        },
+
+        orderBy:{
+          createdAt:"desc"
+        }
+      }
+
+    }
+
+  });
+
+  // ==============================
+// 評価一覧
+// ==============================
+app.get("/user/:id/reviews", requireLogin, async(req:any,res)=>{
+
+  const userId = parseInt(req.params.id);
+
+
+  const reviews = await prisma.review.findMany({
+
+    where:{
+      reviewedId:userId
+    },
+
+    include:{
+      reviewer:true
+    },
+
+    orderBy:{
+      createdAt:"desc"
+    }
+
+  });
+
+
+  res.render("reviews",{
+    reviews
+  });
+
+});
+
+
+  if(!user){
+    return res.status(404).send("ユーザーが存在しません");
+  }
+
+
+  res.render("user",{
+    user
+  });
+
 });
 
 app.get("/listing/:id", requireLogin, async (req: any, res) => {

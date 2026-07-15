@@ -17,7 +17,16 @@
 
 <p>状態：<%= listing.condition ?? "未設定" %></p>
 
-<p>出品者：<%= listing.seller.name %></p>
+<p>
+出品者：
+
+<a href="/user/<%= listing.seller.id %>">
+
+<%= listing.seller.name %>
+
+</a>
+
+</p>
 
 <% if (listing.imageUrl) { %>
 
@@ -69,10 +78,18 @@
 
 <% } %>
 
+<% 
+const alreadyReviewed =
+  listing.reviews.some(
+    review => review.reviewerId === myId
+  );
+%>
+
+
 <% if (
     listing.status === "SOLD" &&
     (listing.sellerId === myId || listing.buyerId === myId) &&
-    listing.reviews.length === 0
+    !alreadyReviewed
 ) { %>
 
 <hr>
