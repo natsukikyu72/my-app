@@ -1,123 +1,19 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>登録教科書カタログ | 慶應教科書フリマ</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Serif+JP:wght@600;800&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        keio: {
-                            blue: '#002F6C',
-                            red: '#9E0B0E',
-                            gold: '#C5A059',
-                            dark: '#0B132B'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Noto Sans JP', 'sans-serif'],
-                        serif: ['Noto Serif JP', 'serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        .keio-stripe {
-            background: linear-gradient(to right, #002F6C 42%, #9E0B0E 42%, #9E0B0E 58%, #002F6C 58%);
-        }
-    </style>
+    <head>
+  <meta charset="UTF-8">
+  <title>教科書</title>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
+<body>
+<h1>教科書一覧</h1>
 
-    <!-- Top Tricolor Pennant Stripe -->
-    <div class="keio-stripe h-1.5 w-full sticky top-0 z-50"></div>
-
-    <!-- Navigation Header -->
-    <header class="bg-white border-b border-slate-100 shadow-sm sticky top-1.5 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="/" class="flex items-center gap-2.5 group">
-                <div class="w-10 h-10 bg-gradient-to-br from-keio-blue to-keio-red rounded-lg flex items-center justify-center text-white shadow-md transition-transform group-hover:scale-105">
-                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 20L10 14M20 4L14 10" stroke-linecap="round"/>
-                        <path d="M10 14L13 11L11 9L8 12L7 15L10 14Z" fill="currentColor" opacity="0.3"/>
-                        <path d="M14 10L11 13L13 15L16 12L17 9L14 10Z" fill="currentColor" opacity="0.3"/>
-                    </svg>
-                </div>
-                <div>
-                    <h1 class="font-serif font-extrabold text-base sm:text-lg text-keio-blue leading-tight tracking-wider">
-                        慶應教科書フリマ
-                    </h1>
-                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest -mt-0.5">
-                        Keio Book Loop
-                    </p>
-                </div>
-            </a>
-            
-            <a href="/" class="text-xs font-bold text-slate-500 hover:text-keio-blue flex items-center gap-1 bg-slate-100 px-3 py-2 rounded-lg transition-colors">
-                ← フリマホームに戻る
-            </a>
-        </div>
-    </header>
-
-    <!-- Main Container -->
-    <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-10">
-        <div class="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden relative p-6 sm:p-8">
-            <div class="keio-stripe h-1 w-full absolute top-0 left-0"></div>
-
-            <div class="mb-8">
-                <h2 class="font-serif text-xl sm:text-2xl font-extrabold text-keio-blue tracking-wider flex items-center gap-2 mb-2">
-                    <span class="w-1.5 h-6 bg-keio-red rounded-full"></span>
-                    登録教科書マスターカタログ
-                </h2>
-                <p class="text-xs text-slate-500">本フリマプラットフォームに登録されている公式指定教科書のマスターリストです。出品時や検索時の基準となります。</p>
-            </div>
-
-            <!-- Table of Books -->
-            <div class="overflow-hidden border border-slate-100 rounded-xl">
-                <table class="min-w-full divide-y divide-slate-100 text-left text-xs sm:text-sm">
-                    <thead class="bg-slate-50 text-slate-400 font-extrabold uppercase tracking-wider text-[10px]">
-                        <tr>
-                            <th class="px-6 py-4">教科書タイトル</th>
-                            <th class="px-6 py-4">指定講義・科目</th>
-                            <th class="px-6 py-4 text-right">新品定価</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 font-medium text-slate-700 bg-white">
-                        <% books.forEach(book => { %>
-                            <tr class="hover:bg-slate-50/50 transition-colors">
-                                <td class="px-6 py-4 font-bold text-slate-800"><%= book.title %></td>
-                                <td class="px-6 py-4 text-slate-500">
-                                    <span class="inline-flex items-center gap-1">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-keio-red"></span>
-                                        <%= book.courseName %>
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-right font-bold text-keio-blue">¥<%= book.originalPrice.toLocaleString() %></td>
-                            </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="mt-8 pt-4 border-t border-slate-100 text-center">
-                <a href="/" class="inline-block bg-keio-blue hover:bg-slate-900 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition-colors shadow-md">
-                    フリマで教科書を検索する
-                </a>
-            </div>
-
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-6 text-center text-slate-400 text-[10px] tracking-wider">
-        &copy; 2026 慶應教科書フリマ (Keio Book Loop) . All Rights Reserved.<br>
-        <span class="text-[9px] mt-1 inline-block text-slate-300">「実学の精神」に基づき、塾生同士の知の循環をサポートします。</span>
-    </footer>
-
+<% books.forEach(book => { %>
+  <div>
+    <h3><%= book.title %></h3>
+    <p>授業：<%= book.courseName %></p>
+    <p>定価：<%= book.originalPrice %>円</p>
+  </div>
+  <hr>
+<% }) %>
 </body>
 </html>

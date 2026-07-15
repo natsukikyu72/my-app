@@ -65,8 +65,6 @@ model Listing {
 
   status ListingStatus @default(SELLING)
 
-  isCompleted Boolean @default(false)
-
   createdAt DateTime @default(now())
 
   updatedAt DateTime @updatedAt

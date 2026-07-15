@@ -1,190 +1,142 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>購入相談・チャットルーム | 慶應教科書フリマ</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Serif+JP:wght@600;800&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        keio: {
-                            blue: '#002F6C',
-                            red: '#9E0B0E',
-                            gold: '#C5A059',
-                            dark: '#0B132B'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Noto Sans JP', 'sans-serif'],
-                        serif: ['Noto Serif JP', 'serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        .keio-stripe {
-            background: linear-gradient(to right, #002F6C 42%, #9E0B0E 42%, #9E0B0E 58%, #002F6C 58%);
-        }
-    </style>
+<meta charset="UTF-8">
+<title>購入相談</title>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
 
-    <!-- Top Tricolor Pennant Stripe -->
-    <div class="keio-stripe h-1.5 w-full sticky top-0 z-50"></div>
 
-    <!-- Navigation Header -->
-    <header class="bg-white border-b border-slate-100 shadow-sm sticky top-1.5 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="/" class="flex items-center gap-2.5 group">
-                <div class="w-10 h-10 bg-gradient-to-br from-keio-blue to-keio-red rounded-lg flex items-center justify-center text-white shadow-md transition-transform group-hover:scale-105">
-                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 20L10 14M20 4L14 10" stroke-linecap="round"/>
-                        <path d="M10 14L13 11L11 9L8 12L7 15L10 14Z" fill="currentColor" opacity="0.3"/>
-                        <path d="M14 10L11 13L13 15L16 12L17 9L14 10Z" fill="currentColor" opacity="0.3"/>
-                    </svg>
-                </div>
-                <div>
-                    <h1 class="font-serif font-extrabold text-base sm:text-lg text-keio-blue leading-tight tracking-wider">
-                        慶應教科書フリマ
-                    </h1>
-                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest -mt-0.5">
-                        Keio Book Loop
-                    </p>
-                </div>
-            </a>
-            
-            <a href="/listing/<%= chatRoom.listing.id %>" class="text-xs font-bold text-slate-500 hover:text-keio-blue flex items-center gap-1 bg-slate-100 px-3 py-2 rounded-lg transition-colors">
-                ← 本の物件詳細へ戻る
-            </a>
-        </div>
-    </header>
+<body>
 
-    <!-- Chat Interface Container -->
-    <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-8 flex flex-col gap-6">
-        
-        <!-- Transaction Item Bar & Safety Banner -->
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-md p-4 sm:p-5 relative overflow-hidden">
-            <div class="keio-stripe h-1 w-full absolute top-0 left-0"></div>
-            
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div>
-                    <span class="inline-block px-2.5 py-0.5 bg-keio-blue/10 text-keio-blue text-[10px] font-bold rounded-md mb-1.5">
-                        取引対象
-                    </span>
-                    <h2 class="font-serif font-bold text-base sm:text-lg text-slate-800">
-                        <%= chatRoom.listing.book.title %>
-                    </h2>
-                    <p class="text-xs text-slate-400 font-medium mt-0.5">
-                        講義：<%= chatRoom.listing.book.courseName %> | 希望価格: ¥<%= chatRoom.listing.price.toLocaleString() %>
-                    </p>
-                </div>
+<h1>購入相談</h1>
 
-                <!-- Deal status Badge & Quick actions -->
-                <div class="flex gap-2 w-full sm:w-auto">
-                    <% if (chatRoom.sellerId === myId && chatRoom.listing.status === "SELLING") { %>
-                        <form action="/chat/<%= chatRoom.id %>/accept" method="post" class="w-full sm:w-auto">
-                            <button type="submit" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-md transition-all whitespace-nowrap">
-                                この人と取引（お取り置き）する
-                            </button>
-                        </form>
-                    <% } %>
 
-                    <% if (chatRoom.listing.status === "RESERVED" && (chatRoom.sellerId === myId || chatRoom.buyerId === myId)) { %>
-                        <form action="/listing/<%= chatRoom.listing.id %>/complete" method="post" class="w-full sm:w-auto">
-                            <button type="submit" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-md transition-all whitespace-nowrap">
-                                本の手渡し・受け渡し完了
-                            </button>
-                        </form>
-                    <% } %>
-                </div>
-            </div>
+<h2>
+<%= chatRoom.listing.book.title %>
+</h2>
 
-            <!-- Campus safety note -->
-            <div class="mt-4 p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-500 flex items-start gap-2">
-                <svg class="w-4 h-4 text-keio-gold shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                </svg>
-                <span>
-                    <strong>手渡し安全ガイド：</strong>キャンパス（日吉の並木、三田の図書館前、矢上コモンズ、SFC鴨池、芝共立、信濃町など）の明るい共用スペースで、昼休みや講義前後の時間帯での引き渡しを推奨します。
-                </span>
-            </div>
-        </div>
+<p>
+授業：
+<%= chatRoom.listing.book.courseName %>
+</p>
 
-        <!-- Chat Message Area -->
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-md flex-grow flex flex-col justify-between overflow-hidden min-h-[400px]">
-            
-            <!-- Message List -->
-            <div class="p-4 sm:p-6 space-y-4 overflow-y-auto max-h-[500px] flex-grow bg-slate-50/50">
-                <% if (chatRoom.messages.length === 0) { %>
-                    <div class="text-center py-20 text-slate-400">
-                        <svg class="w-12 h-12 text-slate-200 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                        </svg>
-                        <p class="text-xs font-semibold">相談メッセージがありません。</p>
-                        <p class="text-[10px] text-slate-300">挨拶や本の状態、受け渡し場所の希望を送信してみましょう。</p>
-                    </div>
-                <% } else { %>
-                    <% chatRoom.messages.forEach(message => { %>
-                        <% const isMe = (message.sender.id === myId); %>
-                        
-                        <div class="flex <%= isMe ? 'justify-end' : 'justify-start' %> items-end gap-2.5">
-                            
-                            <!-- Sender Avatar (Only left side) -->
-                            <% if (!isMe) { %>
-                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-keio-blue to-keio-red text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs" title="<%= message.sender.name %>">
-                                    <%= message.sender.name.substring(0, 1) %>
-                                </div>
-                            <% } %>
 
-                            <!-- Message Box Block -->
-                            <div class="max-w-[75%] sm:max-w-[60%] flex flex-col <%= isMe ? 'items-end' : 'items-start' %>">
-                                <% if (!isMe) { %>
-                                    <span class="text-[10px] text-slate-400 font-bold ml-1 mb-1"><%= message.sender.name %></span>
-                                <% } %>
+<hr>
 
-                                <div class="p-3.5 rounded-2xl text-xs sm:text-sm font-medium leading-relaxed shadow-xs <%= isMe ? 'bg-keio-blue text-white rounded-br-none' : 'bg-white text-slate-800 rounded-bl-none border border-slate-100' %>">
-                                    <%= message.content %>
-                                </div>
-                                <span class="text-[9px] text-slate-400 font-medium mt-1 mx-1">
-                                    <%= new Date(message.createdAt).toLocaleString('ja-JP', {hour: '2-digit', minute:'2-digit'}) %>
-                                </span>
-                            </div>
 
-                        </div>
-                    <% }) %>
-                <% } %>
-            </div>
+<h2>メッセージ</h2>
 
-            <!-- Message Input Area -->
-            <div class="p-4 bg-white border-t border-slate-100">
-                <form action="/chat/<%= chatRoom.id %>/message" method="post" class="flex items-center gap-2">
-                    <input 
-                        type="text"
-                        name="content"
-                        placeholder="手渡し場所、日時の希望などを入力してください..."
-                        required
-                        class="flex-grow pl-4 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-keio-blue focus:bg-white transition-all text-xs sm:text-sm text-slate-800"
-                    >
-                    <button type="submit" class="bg-keio-blue hover:bg-slate-900 text-white font-bold px-5 py-3 rounded-xl shadow-md text-xs sm:text-sm transition-colors whitespace-nowrap">
-                        送信
-                    </button>
-                </form>
-            </div>
 
-        </div>
+<div>
 
-    </main>
+<% if (chatRoom.messages.length === 0) { %>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-6 text-center text-slate-400 text-[10px] tracking-wider">
-        &copy; 2026 慶應教科書フリマ (Keio Book Loop) . All Rights Reserved.<br>
-        <span class="text-[9px] mt-1 inline-block text-slate-300">「実学の精神」に基づき、塾生同士の知の循環をサポートします。</span>
-    </footer>
+<p>
+まだメッセージはありません
+</p>
+
+
+<% } %>
+
+
+
+<% chatRoom.messages.forEach(message => { %>
+
+
+<div>
+
+<strong>
+
+<a href="/user/<%= message.sender.id %>">
+
+<%= message.sender.name %>
+
+</a>
+
+</strong>
+
+<br>
+
+<%= message.content %>
+
+<br>
+
+<small>
+<%= message.createdAt %>
+</small>
+
+
+</div>
+
+<hr>
+
+
+<% }) %>
+
+
+</div>
+
+
+<hr>
+
+
+
+<form action="/chat/<%= chatRoom.id %>/message" method="post">
+
+<input 
+    type="text"
+    name="content"
+    placeholder="メッセージ入力"
+    required
+>
+
+<button type="submit">
+送信
+</button>
+
+</form>
+<br>
+
+<% if (chatRoom.sellerId === myId 
+    && chatRoom.listing.status === "SELLING") { %>
+
+
+<form action="/chat/<%= chatRoom.id %>/accept" method="post">
+
+<button type="submit">
+この人と取引する
+</button>
+
+</form>
+
+
+<% } %>
+
+<hr>
+
+<% if (
+  chatRoom.listing.status === "RESERVED" &&
+  (
+    chatRoom.sellerId === myId ||
+    chatRoom.buyerId === myId
+  )
+) { %>
+
+
+<form action="/listing/<%= chatRoom.listing.id %>/complete" method="post">
+
+<button type="submit">
+受け渡し完了
+</button>
+
+</form>
+
+
+<% } %>
+
+
+<a href="/">戻る</a>
 
 </body>
 </html>

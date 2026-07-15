@@ -218,23 +218,6 @@ app.get("/user/:id", requireLogin, async(req:any, res)=>{
         }
       },
 
-      purchases:{
-        include:{
-          book:true
-        }
-      },
-
-
-      buyerChats:{
-        include:{
-          listing:{
-            include:{
-              book:true
-            }
-          }
-        }
-      },
-
       reviewsReceived:{
         include:{
           reviewer:true
@@ -287,8 +270,7 @@ app.get("/user/:id/reviews", requireLogin, async(req:any,res)=>{
 
 
   res.render("user",{
-    user,
-    myId:req.session.userId
+    user
   });
 
 });
@@ -625,34 +607,10 @@ app.post("/listing/:id/complete", async (req:any, res)=>{
     },
 
     data:{
-      isCompleted:true
+      status:"SOLD"
     }
 
   });
-
-  const reviewCount =
-    await prisma.review.count({
-      where:{
-        listingId: Number(listingId)
-      }
-    });
-
-
-    if(reviewCount >= 2){
-
-      await prisma.listing.update({
-
-        where:{
-          id:Number(listingId)
-        },
-
-        data:{
-          status:"SOLD"
-        }
-
-      });
-
-    }
 
 
   res.redirect(`/listing/${listingId}`);

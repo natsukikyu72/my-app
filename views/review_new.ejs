@@ -1,148 +1,78 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>お取引の評価 | 慶應教科書フリマ</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Serif+JP:wght@600;800&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        keio: {
-                            blue: '#002F6C',
-                            red: '#9E0B0E',
-                            gold: '#C5A059',
-                            dark: '#0B132B'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Noto Sans JP', 'sans-serif'],
-                        serif: ['Noto Serif JP', 'serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        .keio-stripe {
-            background: linear-gradient(to right, #002F6C 42%, #9E0B0E 42%, #9E0B0E 58%, #002F6C 58%);
-        }
-    </style>
+<meta charset="UTF-8">
+<title>評価</title>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
 
-    <!-- Top Tricolor Pennant Stripe -->
-    <div class="keio-stripe h-1.5 w-full sticky top-0 z-50"></div>
+<body>
 
-    <!-- Navigation Header -->
-    <header class="bg-white border-b border-slate-100 shadow-sm sticky top-1.5 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="/" class="flex items-center gap-2.5 group">
-                <div class="w-10 h-10 bg-gradient-to-br from-keio-blue to-keio-red rounded-lg flex items-center justify-center text-white shadow-md transition-transform group-hover:scale-105">
-                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 20L10 14M20 4L14 10" stroke-linecap="round"/>
-                        <path d="M10 14L13 11L11 9L8 12L7 15L10 14Z" fill="currentColor" opacity="0.3"/>
-                        <path d="M14 10L11 13L13 15L16 12L17 9L14 10Z" fill="currentColor" opacity="0.3"/>
-                    </svg>
-                </div>
-                <div>
-                    <h1 class="font-serif font-extrabold text-base sm:text-lg text-keio-blue leading-tight tracking-wider">
-                        慶應教科書フリマ
-                    </h1>
-                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest -mt-0.5">
-                        Keio Book Loop
-                    </p>
-                </div>
-            </a>
-            
-            <button onclick="javascript:history.back()" class="text-xs font-bold text-slate-500 hover:text-keio-blue flex items-center gap-1 bg-slate-100 px-3 py-2 rounded-lg transition-colors">
-                ← 戻る
-            </button>
-        </div>
-    </header>
 
-    <!-- Main Container -->
-    <main class="flex-grow max-w-xl w-full mx-auto px-4 py-10">
-        <div class="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden relative">
-            <div class="keio-stripe h-1 w-full absolute top-0 left-0"></div>
+<h1>
+<%= listing.book.title %> の評価
+</h1>
 
-            <div class="p-6 sm:p-8 border-b border-slate-100 bg-gradient-to-b from-slate-50 to-white">
-                <span class="inline-block px-2.5 py-0.5 bg-keio-blue/10 text-keio-blue text-[10px] font-bold rounded-md mb-2">
-                    取引完了フィードバック
-                </span>
-                <h2 class="font-serif text-lg sm:text-xl font-extrabold text-slate-800 leading-snug">
-                    <%= listing.book.title %> の評価
-                </h2>
-                <p class="text-xs text-slate-500 mt-1">お取引お疲れ様でした。塾生同士の安全でクリーンなコミュニティ維持のため評価をご入力ください。</p>
-            </div>
 
-            <form action="/review" method="post" class="p-6 sm:p-8 space-y-6">
-                
-                <input 
-                    type="hidden"
-                    name="listingId"
-                    value="<%= listing.id %>"
-                >
+<form action="/review" method="post">
 
-                <!-- Rating Selection -->
-                <div>
-                    <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2">
-                        取引満足度（星数）
-                    </label>
-                    <select 
-                        name="rating"
-                        class="w-full pl-4 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-keio-blue focus:bg-white transition-all text-amber-500 font-bold text-base"
-                    >
-                        <option value="5">★★★★★ （大変満足）</option>
-                        <option value="4">★★★★☆ （満足）</option>
-                        <option value="3">★★★☆☆ （普通）</option>
-                        <option value="2">★★☆☆☆ （やや不満）</option>
-                        <option value="1">★☆☆☆☆ （不満）</option>
-                    </select>
-                </div>
 
-                <!-- Comment Input -->
-                <div>
-                    <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2">
-                        お取引コメント
-                    </label>
-                    <textarea
-                        name="comment"
-                        placeholder="手渡し時のご対応への感謝やコメントなどを記入してください（例：丁寧に対応していただきありがとうございました！）"
-                        rows="4"
-                        class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-keio-blue focus:bg-white transition-all text-xs sm:text-sm text-slate-800 placeholder-slate-400 font-medium"
-                    ></textarea>
-                </div>
+<input 
+type="hidden"
+name="listingId"
+value="<%= listing.id %>"
+>
 
-                <!-- Submit Buttons -->
-                <div class="pt-4 flex flex-col sm:flex-row gap-3">
-                    <button 
-                        type="submit"
-                        class="w-full bg-keio-blue hover:bg-slate-900 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all text-sm tracking-widest text-center"
-                    >
-                        評価を送信する
-                    </button>
-                    <button 
-                        type="button"
-                        onclick="javascript:history.back()"
-                        class="w-full sm:w-1/3 text-center bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3.5 px-4 rounded-xl transition-all text-sm tracking-wide"
-                    >
-                        キャンセル
-                    </button>
-                </div>
 
-            </form>
-        </div>
-    </main>
+<label>
+評価
+</label>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-6 text-center text-slate-400 text-[10px] tracking-wider">
-        &copy; 2026 慶應教科書フリマ (Keio Book Loop) . All Rights Reserved.<br>
-        <span class="text-[9px] mt-1 inline-block text-slate-300">「実学の精神」に基づき、塾生同士の知の循環をサポートします。</span>
-    </footer>
+<select name="rating">
+
+<option value="5">
+★★★★★
+</option>
+
+<option value="4">
+★★★★
+</option>
+
+<option value="3">
+★★★
+</option>
+
+<option value="2">
+★★
+</option>
+
+<option value="1">
+★
+</option>
+
+</select>
+
+
+<br>
+
+
+<textarea
+name="comment"
+placeholder="コメント">
+</textarea>
+
+
+<br>
+
+
+<button>
+送信
+</button>
+
+
+</form>
+
 
 </body>
+
 </html>
