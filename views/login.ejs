@@ -9,53 +9,68 @@
 
 </head>
 
+
 <body>
 
 <div class="card">
 
-<h1>教科書フリマ</h1>
 
-<h2>ログイン</h2>
+<h1>ログイン</h1>
+
+
+<% if (typeof error !== "undefined") { %>
+
+<p class="error">
+    <%= error %>
+</p>
+
+<% } %>
+
+
 
 <form action="/login" method="post">
 
-<label>メールアドレス</label>
+
+<label>
+メールアドレス
+</label>
 
 <input
 type="email"
 name="email"
 required>
 
-<label>パスワード</label>
+
+
+<label>
+パスワード
+</label>
 
 <input
 type="password"
 name="password"
 required>
 
-<button>
 
+
+<button type="submit">
 ログイン
-
 </button>
+
 
 </form>
 
+
 <br>
 
-<p>
-
-アカウントをお持ちでない方は
 
 <a href="/signup">
-
-新規登録
-
+新規登録はこちら
 </a>
 
-</p>
 
 </div>
+
 
 </body>
 

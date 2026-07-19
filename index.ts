@@ -2,6 +2,9 @@ import "dotenv/config";
 import express from "express";
 import session from "express-session";
 import bcrypt from "bcryptjs";
+import multer from "multer";
+import { v2 as cloudinary } from "cloudinary";
+import streamifier from "streamifier";
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "./generated/prisma/client";
@@ -11,8 +14,16 @@ const pool = new Pool({ connectionString: process.env.DATABASE_URL,ssl: { reject
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter, log: ["query"] });
 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 const app = express();
 const PORT = process.env.PORT || 8888;
+const upload = multer({
+  storage: multer.memoryStorage(),
+});
 
 app.set("view engine", "ejs");
 app.set("views", "./views");
@@ -40,26 +51,48 @@ app.get("/signup", (req, res) => {
   res.render("signup");
 });
 
-app.post("/signup", async (req, res) => {
-  const { email, password, name, department, grade } = req.body;
 
+app.post("/signup", async (req, res) => {
+
+  const {
+    email,
+    password,
+    name,
+    campus,
+    department,
+    grade
+  } = req.body;
+  // 必須チェック
+  if (
+    !email ||
+    !password ||
+    !name ||
+    !campus ||
+    !department ||
+    !grade
+  ) {
+    return res.render("signup", {
+      error: "すべての項目を入力してください。"
+    });
+  }
+
+  // 慶應メールチェック
   if (!email.endsWith("@keio.jp")) {
-    return res.send(`
-      <p>keio.jp のメールアドレスのみ登録できます。</p>
-      <a href="/signup">戻る</a>
-    `);
+    return res.render("signup", {
+      error: "keio.jp のメールアドレスのみ登録できます。"
+    });
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-
   try {
     await prisma.user.create({
       data: {
         email,
         password: hashedPassword,
         name,
-        department: department || null,
-        grade: grade ? parseInt(grade) : null,
+        campus,
+        department,
+        grade
       },
     });
 
@@ -67,13 +100,12 @@ app.post("/signup", async (req, res) => {
   } catch (e) {
     console.error(e);
 
-    res.send(`
-      <p>登録に失敗しました。</p>
-      <a href="/signup">戻る</a>
-    `);
+
+    return res.render("signup", {
+      error: "このメールアドレスはすでに登録されています。"
+    });
   }
 });
-
 
 // --- 2. ログイン（Login） ---
 app.get("/login", (req, res) => {
@@ -81,31 +113,42 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  const {
+    email,
+    password
+  } = req.body;
+
+  if(!email || !password){
+    return res.render("login",{
+      error:"メールアドレスとパスワードを入力してください。"
+    });
+  }
 
   const user = await prisma.user.findUnique({
-    where: { email },
+    where: {
+      email
+    },
   });
 
   if (!user) {
-    return res.send(`
-      <p>メールアドレスまたはパスワードが違います。</p>
-      <a href="/login">戻る</a>
-    `);
+    return res.render("login", {
+      error:"メールアドレスまたはパスワードが違います。"
+    });
   }
 
-  const ok = await bcrypt.compare(password, user.password);
+  const ok = await bcrypt.compare(
+    password,
+    user.password
+  );
 
   if (!ok) {
-    return res.send(`
-      <p>メールアドレスまたはパスワードが違います。</p>
-      <a href="/login">戻る</a>
-    `);
+    return res.render("login", {
+      error:"メールアドレスまたはパスワードが違います。"
+    });
   }
 
   req.session.userId = user.id;
   req.session.userName = user.name;
-
   res.redirect("/");
 });
 
@@ -175,22 +218,86 @@ app.get("/listing/new", requireLogin, async (req, res) => {
 // ==============================
 // 出品処理
 // ==============================
-app.post("/listing", requireLogin, async (req: any, res) => {
+app.post(
+    "/listing",
+    requireLogin,
+    upload.single("image"),
+    async (req: any, res) => {
 
-  const { bookId, price, condition, imageUrl } = req.body;
+        const {
+            bookId,
+            price,
+            condition
+        } = req.body;
 
-  await prisma.listing.create({
-    data: {
-      sellerId: req.session.userId,
-      bookId: parseInt(bookId),
-      price: parseInt(price),
-      condition: condition || null,
-      imageUrl: imageUrl || null
+        let imageUrl: string | null = null;
+
+        // -------------------------
+        // Cloudinaryへアップロード
+        // -------------------------
+
+        if (req.file) {
+
+            const result = await new Promise<any>((resolve, reject) => {
+
+                const uploadStream = cloudinary.uploader.upload_stream(
+
+                    {
+                        folder: "textbook-market"
+                    },
+
+                    (error, result) => {
+
+                        if (error) {
+
+                            reject(error);
+
+                        } else {
+
+                            resolve(result);
+
+                        }
+
+                    }
+
+                );
+
+                streamifier
+                    .createReadStream(req.file.buffer)
+                    .pipe(uploadStream);
+
+            });
+
+            imageUrl = result.secure_url;
+
+        }
+
+        // -------------------------
+        // Prismaへ保存
+        // -------------------------
+
+        await prisma.listing.create({
+
+            data: {
+
+                sellerId: req.session.userId,
+
+                bookId: Number(bookId),
+
+                price: Number(price),
+
+                condition: condition || null,
+
+                imageUrl: imageUrl
+
+            }
+
+        });
+
+        res.redirect("/");
+
     }
-  });
-
-  res.redirect("/");
-});
+);
 
 
 // ==============================

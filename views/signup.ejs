@@ -15,50 +15,205 @@
 
 <h1>新規登録</h1>
 
+
+<% if (typeof error !== "undefined") { %>
+
+<p class="error">
+    <%= error %>
+</p>
+
+<% } %>
+
+
 <form action="/signup" method="post">
 
-<label>メールアドレス</label>
+
+<label>
+メールアドレス
+</label>
 
 <input
 type="email"
 name="email"
 required>
 
-<label>パスワード</label>
+
+<label>
+パスワード
+</label>
 
 <input
 type="password"
 name="password"
 required>
 
-<label>名前</label>
+
+<label>
+名前
+</label>
 
 <input
 type="text"
 name="name"
 required>
 
-<label>学部・学科</label>
 
-<input
-type="text"
-name="department">
 
-<label>学年</label>
+<label>
+キャンパス
+</label>
 
-<input
-type="number"
-name="grade">
+<select name="campus" required>
 
-<button>
+<option value="">
+選択してください
+</option>
+
+<option value="日吉">
+日吉
+</option>
+
+<option value="三田">
+三田
+</option>
+
+<option value="矢上">
+矢上
+</option>
+
+<option value="湘南藤沢">
+湘南藤沢
+</option>
+
+<option value="信濃町">
+信濃町
+</option>
+
+<option value="芝共立">
+芝共立
+</option>
+
+</select>
+
+
+
+<label>
+学部
+</label>
+
+<select name="department" required>
+
+<option value="">
+選択してください
+</option>
+
+<option value="文学部">
+文学部
+</option>
+
+<option value="経済学部">
+経済学部
+</option>
+
+<option value="法学部">
+法学部
+</option>
+
+<option value="商学部">
+商学部
+</option>
+
+<option value="医学部">
+医学部
+</option>
+
+<option value="理工学部">
+理工学部
+</option>
+
+<option value="総合政策学部">
+総合政策学部
+</option>
+
+<option value="環境情報学部">
+環境情報学部
+</option>
+
+<option value="看護医療学部">
+看護医療学部
+</option>
+
+<option value="薬学部">
+薬学部
+</option>
+
+</select>
+
+
+
+
+<label>
+学年
+</label>
+
+<select name="grade" required>
+
+<option value="">
+選択してください
+</option>
+
+<option value="1">
+1年
+</option>
+
+<option value="2">
+2年
+</option>
+
+<option value="3">
+3年
+</option>
+
+<option value="4">
+4年
+</option>
+
+<option value="5">
+5年
+</option>
+
+<option value="6">
+6年
+</option>
+
+<option value="M1">
+修士1年
+</option>
+
+<option value="M2">
+修士2年
+</option>
+
+<option value="D">
+博士課程
+</option>
+
+</select>
+
+
+
+<button type="submit">
 
 登録
 
 </button>
 
+
 </form>
 
+
 <br>
+
 
 <a href="/login">
 
@@ -66,7 +221,9 @@ name="grade">
 
 </a>
 
+
 </div>
+
 
 </body>
 

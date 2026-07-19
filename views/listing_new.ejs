@@ -15,7 +15,10 @@
 
 <div class="card">
 
-<form action="/listing" method="post">
+<form
+    action="/listing"
+    method="post"
+    enctype="multipart/form-data">
 
 <label>教科書</label>
 
@@ -56,12 +59,12 @@ required>
 
 </select>
 
-<label>画像URL</label>
+<label>画像</label>
 
 <input
-type="text"
-name="imageUrl"
-placeholder="画像アップロード実装予定">
+type="file"
+name="image"
+accept="image/*">
 
 <button>
 
