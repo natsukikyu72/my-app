@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
 <meta charset="UTF-8">
 <title><%= listing.book.title %></title>
@@ -9,139 +8,89 @@
 
 <body>
 
-<div class="nav">
-    <h1><%= listing.book.title %></h1>
-
+<header class="navbar">
+    <h2>📚 商品詳細</h2>
     <a href="/">← ホーム</a>
+</header>
+
+<div class="container">
+
+<div class="detail-card">
+
+<div class="image-wrapper">
+<img src="<%= listing.imageUrl || '/images/no-image.png' %>" class="detail-image">
+
+<span class="status <%= listing.status.toLowerCase() %>">
+<%= listing.status==="SELLING" ? "販売中" : listing.status==="RESERVED" ? "取引中" : "売却済み" %>
+</span>
+
 </div>
 
-<div class="card">
+<h1><%= listing.book.title %></h1>
 
-<p><strong>授業</strong><br>
-<%= listing.book.courseName %></p>
+<p>📖 授業<br><%= listing.book.courseName %></p>
 
-<br>
+<p class="price">
+¥<%= listing.price.toLocaleString() %>
+</p>
 
-<p><strong>定価</strong><br>
-<%= listing.book.originalPrice %>円</p>
+<p>定価：<%= listing.book.originalPrice.toLocaleString() %>円</p>
 
-<br>
-
-<p><strong>販売価格</strong><br>
-<%= listing.price %>円</p>
-
-<br>
-
-<p><strong>状態</strong><br>
-<%= listing.condition ?? "未設定" %></p>
-
-<br>
+<p>状態：<%= listing.condition ?? "未設定" %></p>
 
 <p>
-
-<strong>出品者</strong><br>
-
+出品者：
 <a href="/user/<%= listing.seller.id %>">
 <%= listing.seller.name %>
 </a>
-
 </p>
-
-<br>
-
-<% if(listing.imageUrl){ %>
-
-<img src="<%= listing.imageUrl %>">
-
-<% }else{ %>
-
-<p>画像はありません。</p>
-
-<% } %>
-
-<hr>
-
-<% if(listing.status==="SELLING"){ %>
-
-<p class="status-selling">
-販売中
-</p>
-
-<% } %>
-
-<% if(listing.status==="RESERVED"){ %>
-
-<p class="status-reserved">
-取引中
-</p>
-
-<% } %>
-
-<% if(listing.status==="SOLD"){ %>
-
-<p class="status-sold">
-売却済み
-</p>
-
-<% } %>
 
 </div>
 
-<% if (listing.sellerId !== myId && listing.status==="SELLING"){ %>
+
+<% if(listing.sellerId !== myId && listing.status==="SELLING"){ %>
 
 <form action="/chat/start/<%= listing.id %>" method="post">
-
-<button>
+<button class="main-button">
 購入相談する
 </button>
-
 </form>
 
 <% } %>
 
-<% if(
-listing.status==="RESERVED"
-&& listing.buyerId===myId
-){ %>
+
+<% if(listing.status==="RESERVED" && listing.buyerId===myId){ %>
 
 <form action="/chat/start/<%= listing.id %>" method="post">
-
 <button>
-
 取引中チャットを見る
-
 </button>
-
 </form>
 
 <% } %>
 
+
 <%
-const alreadyReviewed=
-listing.reviews.some(r=>r.reviewerId===myId);
+const alreadyReviewed = listing.reviews.some(
+r => r.reviewerId === myId
+);
 %>
 
+
 <% if(
-listing.status==="SOLD"
-&& !alreadyReviewed
-&& (listing.sellerId===myId||listing.buyerId===myId)
+listing.status==="SOLD" &&
+!alreadyReviewed &&
+(listing.sellerId===myId || listing.buyerId===myId)
 ){ %>
 
-<p>
-
 <a href="/review/new/<%= listing.id %>">
-
 <button>
-
 評価する
-
 </button>
-
 </a>
 
-</p>
-
 <% } %>
+
 
 <% if(listing.sellerId===myId){ %>
 
@@ -149,46 +98,41 @@ listing.status==="SOLD"
 
 <% if(listing.chatRooms.length===0){ %>
 
-<div class="card">
-
+<div class="chat-card">
 まだ相談はありません。
-
 </div>
 
-<% } %>
+<% }else{ %>
 
 <% listing.chatRooms.forEach(chat=>{ %>
 
-<div class="card">
+<div class="chat-card">
 
 <p>
-
+購入希望者：
 <a href="/user/<%= chat.buyer.id %>">
-
 <%= chat.buyer.name %>
-
 </a>
-
 </p>
 
 <% if(chat.messages.length){ %>
 
 <p>
-
 <%= chat.messages[0].content %>
+</p>
 
+<% }else{ %>
+
+<p>
+メッセージなし
 </p>
 
 <% } %>
 
 <a href="/chat/<%= chat.id %>">
-
 <button>
-
 チャットを見る
-
 </button>
-
 </a>
 
 </div>
@@ -196,6 +140,10 @@ listing.status==="SOLD"
 <% }) %>
 
 <% } %>
+
+<% } %>
+
+</div>
 
 </body>
 </html>
