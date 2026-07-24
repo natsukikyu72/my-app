@@ -212,6 +212,7 @@ app.get("/listing/new", requireLogin, async (req, res) => {
 
   res.render("listing_new", {
     books,
+    myId:req.session.userId
   });
 });
 
@@ -340,6 +341,19 @@ app.get("/user/:id", requireLogin, async(req:any, res)=>{
 
   });
 
+  if(!user){
+    return res.status(404).send("ユーザーが存在しません");
+  }
+
+
+  res.render("user",{
+    user,
+    myId:req.session.userId
+  });
+
+
+}); 
+
   // ==============================
 // 評価一覧
 // ==============================
@@ -367,19 +381,6 @@ app.get("/user/:id/reviews", requireLogin, async(req:any,res)=>{
 
   res.render("reviews",{
     reviews
-  });
-
-});
-
-
-  if(!user){
-    return res.status(404).send("ユーザーが存在しません");
-  }
-
-
-  res.render("user",{
-    user,
-    myId:req.session.userId
   });
 
 });
@@ -820,7 +821,8 @@ app.get("/review/new/:listingId", requireLogin, async(req:any, res)=>{
 
 
   res.render("review_new",{
-    listing
+    listing,
+    myId:req.session.userId
   });
 
 });
@@ -833,6 +835,7 @@ app.get("/books", requireLogin, async (req, res) => {
 
   res.render("books", {
     books,
+    myId:req.session.userId
   });
 });
 
