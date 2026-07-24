@@ -308,45 +308,36 @@ app.get("/user/:id", requireLogin, async(req:any, res)=>{
 
   const userId = parseInt(req.params.id);
 
-
   const user = await prisma.user.findUnique({
+  where:{
+    id:userId
+  },
 
-    where:{
-      id:userId
-    },
+  include:{
 
-    include:{
-
-      listings:{
-        include:{
-          book:true
-        },
-
-        orderBy:{
-          createdAt:"desc"
-        }
-      },
-
-      reviewsReceived:{
-        include:{
-          reviewer:true
-        },
-
-        orderBy:{
-          createdAt:"desc"
-        }
-      },
-      buyingListings:{
+    // 出品一覧
+    listings:{
       include:{
-        book:true,
-        seller:true
+        book:true
       },
-      where:{
-        status:"RESERVED"
+      orderBy:{
+        createdAt:"desc"
       }
     },
 
-    buyerChatRooms:{
+    // 購入中
+    purchases:{
+      where:{
+        status:"RESERVED"
+      },
+      include:{
+        book:true,
+        seller:true
+      }
+    },
+
+    // 相談中
+    buyerChats:{
       include:{
         listing:{
           include:{
@@ -355,9 +346,25 @@ app.get("/user/:id", requireLogin, async(req:any, res)=>{
           }
         }
       }
+    },
+
+    // 評価
+    reviewsReceived:{
+      include:{
+        reviewer:true
+      },
+      orderBy:{
+        createdAt:"desc"
+      }
     }
 
-    }
+  }
+
+});
+
+  
+
+    
 
   });
 

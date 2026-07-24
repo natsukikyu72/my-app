@@ -102,7 +102,7 @@ class="book-image">
 
 <h2>🛒 購入取引中の商品</h2>
 
-<% if(user.buyingListings.length===0){ %>
+<% if(user.purchases.length===0){ %>
 
 <div class="card">
 現在取引中の商品はありません。
@@ -112,7 +112,7 @@ class="book-image">
 
 <div class="listing-grid">
 
-<% user.buyingListings.forEach(listing=>{ %>
+<% user.purchases.forEach(purchase=>{ %>
 
 <a class="listing-card" href="/listing/<%= listing.id %>">
 
@@ -148,7 +148,7 @@ class="book-image">
 
 <h2>💬 相談中の商品</h2>
 
-<% if(user.buyerChatRooms.length===0){ %>
+<% if(user.buyerChats.length===0){ %>
 
 <div class="card">
 相談中の商品はありません。
@@ -158,7 +158,7 @@ class="book-image">
 
 <div class="listing-grid">
 
-<% user.buyerChatRooms.forEach(chat=>{ %>
+<% user.buyerChats.forEach(chat=>{ %>
 
 <a class="listing-card" href="/chat/<%= chat.id %>">
 
