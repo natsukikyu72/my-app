@@ -335,7 +335,27 @@ app.get("/user/:id", requireLogin, async(req:any, res)=>{
         orderBy:{
           createdAt:"desc"
         }
+      },
+      buyingListings:{
+      include:{
+        book:true,
+        seller:true
+      },
+      where:{
+        status:"RESERVED"
       }
+    },
+
+    buyerChatRooms:{
+      include:{
+        listing:{
+          include:{
+            book:true,
+            seller:true
+          }
+        }
+      }
+    }
 
     }
 

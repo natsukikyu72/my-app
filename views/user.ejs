@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
 <meta charset="UTF-8">
 <title><%= user.name %></title>
@@ -13,99 +12,181 @@
 
 <div class="container">
 
+<h1><%= user.name %></h1>
 
-<h1>
-
-<%= user.name %>
-
-</h1>
-
-<a href="/">ホーム</a>
-
-</div>
+<%
+let avg = 0;
+if(user.reviewsReceived.length){
+    avg = (
+        user.reviewsReceived.reduce((a,r)=>a+r.rating,0)
+        / user.reviewsReceived.length
+    ).toFixed(1);
+}
+%>
 
 <div class="card">
 
+<h2>プロフィール</h2>
+
+<p><strong>キャンパス：</strong><%= user.campus %></p>
+<p><strong>学部：</strong><%= user.department %></p>
+<p><strong>学年：</strong><%= user.grade %></p>
+
+<p style="margin-top:15px;">
+<a href="/user/<%= user.id %>/reviews">
+⭐ <%= avg %>（<%= user.reviewsReceived.length %>件）
+</a>
+</p>
+
+<% if(user.id === myId){ %>
+
+<p style="margin-top:20px;">
+<a href="/profile/edit">
+<button>プロフィール編集</button>
+</a>
+</p>
+
+<% } %>
+
+</div>
+
 <%
-
-let avg=0;
-
-if(user.reviewsReceived.length){
-
-avg=(user.reviewsReceived.reduce((a,r)=>a+r.rating,0)
-/user.reviewsReceived.length).toFixed(1);
-
-}
-
+const selling=user.listings.filter(l=>l.status==="SELLING");
 %>
 
-<h2>
+<h2>📚 出品中の商品</h2>
 
-評価
+<% if(selling.length===0){ %>
 
-</h2>
+<div class="card">
+出品中の商品はありません。
+</div>
 
-<p>
+<% }else{ %>
 
-<a href="/user/<%= user.id %>/reviews">
+<div class="listing-grid">
 
-⭐ <%= avg %>
+<% selling.forEach(listing=>{ %>
 
-（<%= user.reviewsReceived.length %>件）
+<a class="listing-card" href="/listing/<%= listing.id %>">
+
+<img
+src="<%= listing.imageUrl || '/images/no-image.png' %>"
+class="book-image">
+
+<div class="card-body">
+
+<h3><%= listing.book.title %></h3>
+
+<p><%= listing.book.courseName %></p>
+
+<p class="price">
+¥<%= listing.price.toLocaleString() %>
+</p>
+
+<span class="status selling">
+販売中
+</span>
+
+</div>
 
 </a>
 
-</p>
-
-</div>
-
-<h2>
-
-出品一覧
-
-</h2>
-
-<% if(user.listings.length===0){ %>
-
-<div class="card">
-
-出品はありません
+<% }) %>
 
 </div>
 
 <% } %>
 
-<% user.listings.forEach(listing=>{ %>
+<% if(user.id===myId){ %>
+
+<h2>🛒 購入取引中の商品</h2>
+
+<% if(user.buyingListings.length===0){ %>
 
 <div class="card">
+現在取引中の商品はありません。
+</div>
 
-<h3>
+<% }else{ %>
 
-<a href="/listing/<%= listing.id %>">
+<div class="listing-grid">
 
-<%= listing.book.title %>
+<% user.buyingListings.forEach(listing=>{ %>
+
+<a class="listing-card" href="/listing/<%= listing.id %>">
+
+<img
+src="<%= listing.imageUrl || '/images/no-image.png' %>"
+class="book-image">
+
+<div class="card-body">
+
+<h3><%= listing.book.title %></h3>
+
+<p>
+出品者：<%= listing.seller.name %>
+</p>
+
+<p class="price">
+¥<%= listing.price.toLocaleString() %>
+</p>
+
+<span class="status reserved">
+取引中
+</span>
+
+</div>
 
 </a>
 
-</h3>
+<% }) %>
+
+</div>
+
+<% } %>
+
+<h2>💬 相談中の商品</h2>
+
+<% if(user.buyerChatRooms.length===0){ %>
+
+<div class="card">
+相談中の商品はありません。
+</div>
+
+<% }else{ %>
+
+<div class="listing-grid">
+
+<% user.buyerChatRooms.forEach(chat=>{ %>
+
+<a class="listing-card" href="/chat/<%= chat.id %>">
+
+<img
+src="<%= chat.listing.imageUrl || '/images/no-image.png' %>"
+class="book-image">
+
+<div class="card-body">
+
+<h3><%= chat.listing.book.title %></h3>
 
 <p>
-
-価格：
-<%= listing.price %>円
-
-</p>
-
-<p>
-
-状態：
-<%= listing.status %>
-
+出品者：<%= chat.listing.seller.name %>
 </p>
 
 </div>
 
+</a>
+
 <% }) %>
+
+</div>
+
+<% } %>
+
+<% } %>
+
+</div>
 
 </body>
 </html>
