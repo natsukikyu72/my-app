@@ -362,12 +362,6 @@ app.get("/user/:id", requireLogin, async(req:any, res)=>{
 
 });
 
-  
-
-    
-
-  });
-
   if(!user){
     return res.status(404).send("ユーザーが存在しません");
   }
