@@ -7,17 +7,7 @@
 </head>
 <body>
 
-<header class="navbar">
-    <h2>📚 教科書フリマ</h2>
-    <div>
-        こんにちは <b><%= myName %></b> さん
-        <a href="/user/<%= myId %>">マイページ</a>
-        <a href="/listing/new">出品</a>
-        <form action="/logout" method="post" class="inline">
-            <button>ログアウト</button>
-        </form>
-    </div>
-</header>
+<%- include("partials/header") %>
 
 <div class="container">
 

@@ -378,7 +378,8 @@ app.get("/user/:id/reviews", requireLogin, async(req:any,res)=>{
 
 
   res.render("user",{
-    user
+    user,
+    myId:req.session.userId
   });
 
 });
