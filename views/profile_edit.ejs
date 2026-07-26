@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+<meta charset="UTF-8">
+<title>プロフィール編集</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<%- include("partials/header") %>
+
+<div class="container">
+
+<div class="card">
+
+<h1>プロフィール編集</h1>
+
+<form action="/profile/edit" method="post">
+
+<label>名前</label>
+
+<input
+type="text"
+name="name"
+value="<%= user.name %>"
+required>
+
+<label>キャンパス</label>
+
+<select name="campus" required>
+
+<option value="日吉" <%= user.campus==="日吉"?"selected":"" %>>日吉</option>
+<option value="三田" <%= user.campus==="三田"?"selected":"" %>>三田</option>
+<option value="矢上" <%= user.campus==="矢上"?"selected":"" %>>矢上</option>
+<option value="湘南藤沢" <%= user.campus==="湘南藤沢"?"selected":"" %>>湘南藤沢</option>
+<option value="信濃町" <%= user.campus==="信濃町"?"selected":"" %>>信濃町</option>
+<option value="芝共立" <%= user.campus==="芝共立"?"selected":"" %>>芝共立</option>
+
+</select>
+
+<label>学部</label>
+
+<select name="department" required>
+
+<option value="文学部" <%= user.department==="文学部"?"selected":"" %>>文学部</option>
+<option value="経済学部" <%= user.department==="経済学部"?"selected":"" %>>経済学部</option>
+<option value="法学部" <%= user.department==="法学部"?"selected":"" %>>法学部</option>
+<option value="商学部" <%= user.department==="商学部"?"selected":"" %>>商学部</option>
+<option value="医学部" <%= user.department==="医学部"?"selected":"" %>>医学部</option>
+<option value="理工学部" <%= user.department==="理工学部"?"selected":"" %>>理工学部</option>
+<option value="総合政策学部" <%= user.department==="総合政策学部"?"selected":"" %>>総合政策学部</option>
+<option value="環境情報学部" <%= user.department==="環境情報学部"?"selected":"" %>>環境情報学部</option>
+<option value="看護医療学部" <%= user.department==="看護医療学部"?"selected":"" %>>看護医療学部</option>
+<option value="薬学部" <%= user.department==="薬学部"?"selected":"" %>>薬学部</option>
+
+</select>
+
+<label>学年</label>
+
+<select name="grade" required>
+
+<option value="1" <%= user.grade==="1"?"selected":"" %>>1年</option>
+<option value="2" <%= user.grade==="2"?"selected":"" %>>2年</option>
+<option value="3" <%= user.grade==="3"?"selected":"" %>>3年</option>
+<option value="4" <%= user.grade==="4"?"selected":"" %>>4年</option>
+<option value="5" <%= user.grade==="5"?"selected":"" %>>5年</option>
+<option value="6" <%= user.grade==="6"?"selected":"" %>>6年</option>
+<option value="M1" <%= user.grade==="M1"?"selected":"" %>>修士1年</option>
+<option value="M2" <%= user.grade==="M2"?"selected":"" %>>修士2年</option>
+<option value="D" <%= user.grade==="D"?"selected":"" %>>博士課程</option>
+
+</select>
+
+<button type="submit">
+保存
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

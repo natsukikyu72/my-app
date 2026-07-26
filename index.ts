@@ -401,7 +401,8 @@ app.get("/user/:id/reviews", requireLogin, async(req:any,res)=>{
 
 
   res.render("reviews",{
-    reviews
+    reviews,
+    myId:req.session.userId
   });
 
 });
@@ -845,6 +846,55 @@ app.get("/review/new/:listingId", requireLogin, async(req:any, res)=>{
     listing,
     myId:req.session.userId
   });
+
+});
+
+app.get("/profile/edit", requireLogin, async (req:any, res)=>{
+
+    const user = await prisma.user.findUnique({
+        where:{
+            id:req.session.userId
+        }
+    });
+
+    if(!user){
+        return res.redirect("/");
+    }
+
+    res.render("profile_edit",{
+        user,
+        myId:req.session.userId
+    });
+
+});
+
+app.post("/profile/edit", requireLogin, async(req:any,res)=>{
+
+    const {
+        name,
+        campus,
+        department,
+        grade
+    } = req.body;
+
+    await prisma.user.update({
+
+        where:{
+            id:req.session.userId
+        },
+
+        data:{
+            name,
+            campus,
+            department,
+            grade
+        }
+
+    });
+
+    req.session.userName=name;
+
+    res.redirect(`/user/${req.session.userId}`);
 
 });
 
