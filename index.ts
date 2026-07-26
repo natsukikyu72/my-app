@@ -452,38 +452,38 @@ app.get("/listing/:id", requireLogin, async (req: any, res) => {
 
     const listing = await prisma.listing.findUnique({
         where:{
-      id
-    },
-
-    include:{
-      book:true,
-      seller:true,
-      reviews:true,
-
-      chatRooms:{
+            id
+        },
         include:{
-          buyer:true,
-          messages:{
-            orderBy:{
-              createdAt:"desc"
-            },
-            take:1
-          }
+            book:true,
+            seller:true,
+            reviews:true,
+            chatRooms:{
+                include:{
+                    buyer:true,
+                    messages:{
+                        orderBy:{
+                            createdAt:"desc"
+                        },
+                        take:1
+                    }
+                }
+            }
         }
-      }
-    }
+    });
 
-});
-
-    if (!listing) {
+    if(!listing){
         return res.status(404).send("出品が見つかりません");
     }
 
-    res.render("listing_detail", {
-        listing,
-        myId: req.session.userId
-    });
+    // 自分のチャット（購入希望者のみ）
+   const myChat = listing.chatRooms.find(chat=>chat.buyerId===req.session.userId);
 
+    res.render("listing_detail",{
+        listing,
+        myId:req.session.userId,
+        myChat
+    });
 });
 
 
@@ -553,136 +553,127 @@ app.post("/chat/start/:listingId", async (req: any, res) => {
 
 });
 
-app.get("/chat/:id", async (req: any, res) => {
+app.get("/chat/:id", requireLogin, async (req:any,res)=>{
 
-  const userId = req.session.userId;
+    const userId=req.session.userId;
 
-  // ログイン確認
-  if (!userId) {
-    return res.redirect("/login");
-  }
+    const chatId=parseInt(req.params.id);
 
+    const chatRoom=await prisma.chatRoom.findUnique({
 
-  const chatId = parseInt(req.params.id);
-
-
-  // チャット情報取得
-  const chatRoom = await prisma.chatRoom.findUnique({
-
-    where: {
-      id: chatId
-    },
-
-    include: {
-
-      listing: {
-        include: {
-          book: true
-        }
-      },
-
-      buyer: true,
-
-      seller: true,
-
-      messages: {
-        include: {
-          sender: true
+        where:{
+            id:chatId
         },
 
-        orderBy: {
-          createdAt: "asc"
-        }
-      }
+        include:{
 
+            listing:{
+                include:{
+                    book:true,
+                    seller:true
+                }
+            },
+
+            buyer:true,
+
+            seller:true,
+
+            messages:{
+                include:{
+                    sender:true
+                },
+
+                orderBy:{
+                    createdAt:"asc"
+                }
+            }
+
+        }
+
+    });
+
+    if(!chatRoom){
+        return res.status(404).send("チャットが存在しません");
     }
 
-  });
+    if(
+        chatRoom.buyerId!==userId &&
+        chatRoom.sellerId!==userId
+    ){
+        return res.status(403).send("アクセスできません");
+    }
 
+    res.render("chat",{
 
-  if (!chatRoom) {
-    return res.status(404).send("チャットが存在しません");
-  }
+        chatRoom,
+        myId:userId
 
-
-  // 関係者以外は見られない
-  if (
-    chatRoom.buyerId !== userId &&
-    chatRoom.sellerId !== userId
-  ) {
-    return res.status(403).send("アクセスできません");
-  }
-
-
-  res.render("chat", {
-    chatRoom,
-    myId: userId
-  });
+    });
 
 });
 
-app.post("/chat/:id/message", async (req: any, res) => {
+app.post("/chat/:id/message", requireLogin, async(req:any,res)=>{
 
-  const userId = req.session.userId;
+    const userId=req.session.userId;
 
+    const chatRoomId=parseInt(req.params.id);
 
-  if (!userId) {
-    return res.redirect("/login");
-  }
+    const content=req.body.content;
 
-
-  const chatRoomId = parseInt(req.params.id);
-
-
-  const content = req.body.content;
-
-
-  if (!content) {
-    return res.redirect(`/chat/${chatRoomId}`);
-  }
-
-
-  // チャット参加者か確認
-  const chatRoom = await prisma.chatRoom.findUnique({
-
-    where: {
-      id: chatRoomId
+    if(!content){
+        return res.redirect(`/chat/${chatRoomId}`);
     }
 
-  });
+    const chatRoom=await prisma.chatRoom.findUnique({
 
+        where:{
+            id:chatRoomId
+        },
 
-  if (!chatRoom) {
-    return res.status(404).send("チャットがありません");
-  }
+        include:{
+            listing:true
+        }
 
+    });
 
-  if (
-    chatRoom.buyerId !== userId &&
-    chatRoom.sellerId !== userId
-  ) {
-    return res.status(403).send("アクセスできません");
-  }
+    if(!chatRoom){
+        return res.status(404).send("チャットがありません");
+    }
 
+    if(
+        chatRoom.buyerId!==userId &&
+        chatRoom.sellerId!==userId
+    ){
+        return res.status(403).send("アクセスできません");
+    }
 
-  // Message作成
-  await prisma.message.create({
+    // 他の人と取引成立していたら送信不可
+    if(
 
-    data: {
+        chatRoom.listing.status==="RESERVED" &&
+        chatRoom.listing.buyerId!==chatRoom.buyerId
 
-      chatRoomId: chatRoomId,
+    ){
 
-      senderId: userId,
-
-      content: content
+        return res.send("この商品は他の購入者との取引が成立したため、新しいメッセージは送信できません。");
 
     }
 
-  });
+    await prisma.message.create({
 
+        data:{
 
-  // チャット画面へ戻る
-  res.redirect(`/chat/${chatRoomId}`);
+            chatRoomId,
+
+            senderId:userId,
+
+            content
+
+        }
+
+    });
+
+    res.redirect(`/chat/${chatRoomId}`);
 
 });
 

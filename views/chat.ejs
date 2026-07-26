@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
 <meta charset="UTF-8">
 <title>購入相談</title>
@@ -13,80 +12,115 @@
 
 <div class="container">
 
-<div class="nav">
-
-<h1>購入相談</h1>
+<div class="page-header">
+<h1>
+<%= myId===chatRoom.sellerId ? chatRoom.buyer.name : chatRoom.seller.name %> さんとのチャット
+</h1>
 
 <a href="/listing/<%= chatRoom.listing.id %>">
-
-商品へ戻る
-
+← 商品ページへ戻る
 </a>
-
 </div>
+
 
 <div class="card">
 
-<h2>
+<h2><%= chatRoom.listing.book.title %></h2>
 
-<%= chatRoom.listing.book.title %>
+<p>📖 <%= chatRoom.listing.book.courseName %></p>
 
-</h2>
+<p class="price">
+¥<%= chatRoom.listing.price.toLocaleString() %>
+</p>
+
+<p>
+状態：
+<%= chatRoom.listing.condition ?? "未設定" %>
+</p>
 
 <p>
 
-授業：
-<%= chatRoom.listing.book.courseName %>
+<% if(myId===chatRoom.sellerId){ %>
+
+購入希望者：
+<a href="/user/<%= chatRoom.buyer.id %>">
+<%= chatRoom.buyer.name %>
+</a>
+
+<% }else{ %>
+
+出品者：
+<a href="/user/<%= chatRoom.seller.id %>">
+<%= chatRoom.seller.name %>
+</a>
+
+<% } %>
 
 </p>
 
 </div>
 
-<h2>
 
+<h2 style="margin:30px 0 15px;">
 メッセージ
-
 </h2>
+
 
 <% if(chatRoom.messages.length===0){ %>
 
 <div class="card">
-
-まだメッセージはありません
-
+まだメッセージはありません。
 </div>
 
 <% } %>
 
+
 <% chatRoom.messages.forEach(message=>{ %>
 
-<div class="message <%= message.senderId===myId?'mine':'' %>">
+<div class="message <%= message.senderId===myId ? 'mine' : '' %>">
+
+<div class="message-header">
 
 <strong>
 
 <a href="/user/<%= message.sender.id %>">
-
 <%= message.sender.name %>
-
 </a>
 
 </strong>
 
-<br><br>
+<span class="small">
 
+<%= new Date(message.createdAt).toLocaleString("ja-JP",{
+timeZone:"Asia/Tokyo",
+year:"numeric",
+month:"2-digit",
+day:"2-digit",
+hour:"2-digit",
+minute:"2-digit"
+}) %>
+
+</span>
+
+</div>
+
+<div class="message-content">
 <%= message.content %>
-
-<br><br>
-
-<div class="small">
-
-<%= message.createdAt.toLocaleString() %>
-
 </div>
 
 </div>
 
 <% }) %>
+
+
+<%
+const canSend =
+chatRoom.listing.status==="SELLING" ||
+chatRoom.listing.buyerId===chatRoom.buyerId;
+%>
+
+
+<% if(canSend){ %>
 
 <form action="/chat/<%= chatRoom.id %>/message" method="post">
 
@@ -95,43 +129,77 @@ name="content"
 placeholder="メッセージを入力"
 required></textarea>
 
+<div style="margin-top:15px;">
+
 <button>
-
 送信
-
 </button>
+
+</div>
 
 </form>
 
-<br>
+<% }else{ %>
 
-<% if(chatRoom.sellerId===myId && chatRoom.listing.status==="SELLING"){ %>
+<div class="card warning">
+
+この商品は他の購入希望者との取引が成立したため、
+チャット履歴のみ閲覧できます。
+
+</div>
+
+<% } %>
+
+
+<% if(chatRoom.sellerId===myId){ %>
+
+<% if(chatRoom.listing.status==="SELLING"){ %>
+
+<div style="margin-top:20px;">
 
 <form action="/chat/<%= chatRoom.id %>/accept" method="post">
 
 <button>
-
 この人と取引する
-
 </button>
 
 </form>
 
+</div>
+
+<% }else if(chatRoom.listing.buyerId===chatRoom.buyerId){ %>
+
+<div class="card success">
+
+✅ この購入希望者と現在取引中です。
+
+</div>
+
 <% } %>
 
-<% if(chatRoom.listing.status==="RESERVED"){ %>
+<% } %>
+
+
+<% if(
+chatRoom.listing.status==="RESERVED" &&
+chatRoom.listing.buyerId===chatRoom.buyerId
+){ %>
+
+<div style="margin-top:20px;">
 
 <form action="/listing/<%= chatRoom.listing.id %>/complete" method="post">
 
 <button>
-
 受け渡し完了
-
 </button>
 
 </form>
 
+</div>
+
 <% } %>
+
+</div>
 
 </body>
 </html>

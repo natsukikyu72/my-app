@@ -15,29 +15,14 @@ body{
     line-height:1.6;
 }
 
-
-/* 共通 */
+/* =========================
+   共通
+========================= */
 
 a{
     color:inherit;
     text-decoration:none;
 }
-
-button{
-    border:none;
-    cursor:pointer;
-    background:#003b70;
-    color:white;
-    padding:10px 18px;
-    border-radius:8px;
-    font-size:15px;
-    transition:.2s;
-}
-
-button:hover{
-    background:#002b52;
-}
-
 
 .container{
     max-width:1100px;
@@ -45,9 +30,54 @@ button:hover{
     padding:30px;
 }
 
+.card,
+.detail-card,
+.chat-card,
+.listing-card{
+    background:#fff;
+    border-radius:18px;
+    box-shadow:0 6px 20px rgba(0,0,0,.08);
+}
 
+.card{
+    padding:25px;
+    margin-bottom:25px;
+}
 
-/* ヘッダー */
+button{
+    border:none;
+    cursor:pointer;
+    background:#003b70;
+    color:white;
+    padding:12px 20px;
+    border-radius:12px;
+    font-size:15px;
+    font-weight:600;
+    transition:.2s;
+}
+
+button:hover{
+    background:#002b52;
+    transform:translateY(-2px);
+}
+
+input,
+textarea,
+select{
+    width:100%;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-size:15px;
+}
+
+textarea{
+    resize:vertical;
+}
+
+/* =========================
+   Header
+========================= */
 
 .navbar{
     background:#003b70;
@@ -56,297 +86,29 @@ button:hover{
     display:flex;
     justify-content:space-between;
     align-items:center;
+    box-shadow:0 2px 12px rgba(0,0,0,.12);
 }
-
 
 .navbar a{
     color:white;
     margin-left:20px;
 }
 
-
 .navbar button{
     background:white;
     color:#003b70;
-    margin-left:15px;
 }
 
-
-
-/* 検索 */
+/* =========================
+   Search
+========================= */
 
 .search-box{
     background:white;
     padding:25px;
-    border-radius:15px;
-    margin-bottom:30px;
-    box-shadow:0 3px 12px rgba(0,0,0,.08);
-}
-
-
-input,
-textarea,
-select{
-
-    width:100%;
-    padding:12px;
-
-    border:1px solid #ddd;
-
-    border-radius:10px;
-
-    font-size:15px;
-
-}
-
-
-
-/* 商品一覧 */
-
-.listing-grid{
-
-    display:grid;
-
-    grid-template-columns:repeat(3,1fr);
-
-    gap:25px;
-
-}
-
-
-
-.listing-link{
-    display:block;
-}
-
-
-
-.listing-card{
-
-    background:white;
-
-    border-radius:16px;
-
-    overflow:hidden;
-
-    box-shadow:
-    0 4px 15px rgba(0,0,0,.08);
-
-    transition:.2s;
-
-}
-
-
-
-.listing-card:hover{
-
-    transform:translateY(-5px);
-
-    box-shadow:
-    0 8px 25px rgba(0,0,0,.15);
-
-}
-
-
-
-.image-wrapper{
-
-    position:relative;
-
-}
-
-
-
-.book-image{
-
-    width:100%;
-
-    aspect-ratio:1/1;
-
-    object-fit:cover;
-
-}
-
-
-
-.detail-image{
-
-    width:400px;
-
-    aspect-ratio:1/1;
-
-    object-fit:cover;
-
-}
-
-
-
-.card-body{
-
-    padding:18px;
-
-}
-
-
-
-.listing-card h3{
-
-    font-size:18px;
-
-    margin-bottom:10px;
-
-}
-
-
-
-.price{
-
-    font-size:24px;
-
-    font-weight:bold;
-
-    color:#003b70;
-
-    margin:10px 0;
-
-}
-
-
-.original{
-
-    color:#777;
-
-    font-size:14px;
-
-}
-
-
-
-.seller{
-
-    color:#555;
-
-}
-
-
-
-/* 状態バッジ */
-
-.status{
-
-    position:absolute;
-
-    top:12px;
-
-    left:12px;
-
-    padding:5px 12px;
-
-    border-radius:20px;
-
-    color:white;
-
-    font-size:13px;
-
-    font-weight:bold;
-
-}
-
-
-.status.selling{
-
-    background:#198754;
-
-}
-
-
-.status.reserved{
-
-    background:#f59e0b;
-
-}
-
-
-.status.sold{
-
-    background:#6b7280;
-
-}
-
-
-
-/* 商品詳細 */
-
-.detail-card{
-
-    background:white;
-
-    padding:30px;
-
     border-radius:18px;
-
-    box-shadow:
-    0 4px 15px rgba(0,0,0,.08);
-
-    margin-bottom:25px;
-
-}
-
-
-
-/* チャット */
-
-.chat-card{
-
-    background:white;
-
-    padding:20px;
-
-    border-radius:15px;
-
-    margin-bottom:15px;
-
-    box-shadow:
-    0 3px 10px rgba(0,0,0,.08);
-
-}
-
-
-
-.message{
-
-    padding:12px;
-
-    border-radius:12px;
-
-    background:#eef4ff;
-
-    margin-bottom:10px;
-
-}
-
-
-
-.message.mine{
-
-    background:#dbeafe;
-
-}
-
-
-
-/* エラー */
-
-.error{
-
-    background:#fee2e2;
-
-    color:#b91c1c;
-
-    padding:12px;
-
-    border-radius:10px;
-
+    margin-bottom:30px;
+    box-shadow:0 6px 20px rgba(0,0,0,.08);
 }
 
 .search-row{
@@ -357,7 +119,6 @@ select{
 
 .search-row input{
     flex:1;
-    margin-bottom:0;
 }
 
 .filter-grid{
@@ -370,8 +131,8 @@ select{
 .filter-grid label{
     display:flex;
     flex-direction:column;
-    font-weight:600;
     font-size:14px;
+    font-weight:600;
 }
 
 .checkbox{
@@ -383,66 +144,310 @@ select{
 
 .checkbox input{
     width:auto;
-    margin:0;
+}
+
+/* =========================
+   Listing
+========================= */
+
+.listing-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:25px;
+}
+
+.listing-link{
+    display:block;
+}
+
+.listing-card{
+    overflow:hidden;
+    transition:.25s;
+}
+
+.listing-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 10px 28px rgba(0,0,0,.14);
+}
+
+.image-wrapper{
+    position:relative;
+}
+
+.book-image{
+    width:100%;
+    aspect-ratio:1/1;
+    object-fit:cover;
+}
+
+.detail-image{
+    width:100%;
+    max-width:450px;
+    aspect-ratio:1/1;
+    object-fit:cover;
+    display:block;
+    margin:auto;
+    border-radius:14px;
+}
+
+.card-body{
+    padding:18px;
+}
+
+.listing-card h3{
+    font-size:18px;
+    margin-bottom:10px;
 }
 
 .price{
     font-size:26px;
-    font-weight:700;
+    font-weight:bold;
     color:#c8102e;
-    margin:10px 0 4px;
+    margin:10px 0;
 }
 
 .original{
     color:#888;
     font-size:13px;
-    margin-bottom:10px;
+    margin-bottom:8px;
 }
 
 .seller,
-.campus,
 .condition{
-    font-size:14px;
     color:#555;
-    margin:3px 0;
+    font-size:14px;
+    margin:4px 0;
 }
 
 .campus-tag{
     display:inline-block;
-    margin-top:8px;
-    padding:4px 10px;
+    margin:8px 0;
+    padding:5px 12px;
     border-radius:20px;
     background:#d8e8ff;
-    color:#003c8f;
+    color:#003b70;
     font-size:12px;
-    font-weight:600;
+    font-weight:bold;
 }
 
+/* =========================
+   Status Badge
+========================= */
 
-/* スマホ対応 */
+.status{
+    position:absolute;
+    top:12px;
+    left:12px;
+    color:white;
+    font-size:13px;
+    font-weight:bold;
+    border-radius:20px;
+    padding:6px 12px;
+}
 
-@media(max-width:800px){
+.status.selling{
+    background:#16a34a;
+}
+
+.status.reserved{
+    background:#f59e0b;
+}
+
+.status.sold{
+    background:#6b7280;
+}
+
+/* =========================
+   Detail
+========================= */
+
+.detail-card{
+    padding:30px;
+    margin-bottom:30px;
+}
+
+/* =========================
+   Profile
+========================= */
+
+.profile-card{
+    display:flex;
+    align-items:center;
+    gap:25px;
+}
+
+.profile-image{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    object-fit:cover;
+    border:4px solid #003b70;
+}
+
+/* =========================
+   Chat List
+========================= */
+
+.chat-card{
+    padding:20px;
+    margin-bottom:15px;
+}
+
+.chat-card:hover{
+    transform:translateY(-3px);
+}
+
+.accepted-chat{
+    border:2px solid #16a34a;
+    background:#f3fff5;
+}
+
+.success{
+    border:2px solid #16a34a;
+    background:#f3fff5;
+    color:#166534;
+}
+
+/* =========================
+   Chat
+========================= */
+
+.chat-area{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    margin:25px 0;
+}
+
+.message{
+    display:flex;
+}
+
+.message.mine{
+    justify-content:flex-end;
+}
+
+.message.other{
+    justify-content:flex-start;
+}
+
+.bubble{
+    max-width:70%;
+    padding:14px 18px;
+    border-radius:18px;
+    background:white;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+    word-break:break-word;
+}
+
+.mine .bubble{
+    background:#dcf8c6;
+}
+
+.bubble strong{
+    display:block;
+    margin-bottom:8px;
+}
+
+.bubble a{
+    color:#003b70;
+}
+
+.content{
+    line-height:1.6;
+}
+
+.small{
+    margin-top:10px;
+    text-align:right;
+    color:#888;
+    font-size:12px;
+}
+
+.chat-input{
+    margin-top:30px;
+}
+
+.chat-input form{
+    display:flex;
+    gap:12px;
+    align-items:flex-end;
+}
+
+.chat-input textarea{
+    flex:1;
+    height:80px;
+    resize:none;
+}
+
+.chat-input button{
+    width:110px;
+    height:80px;
+}
+
+/* =========================
+   Error
+========================= */
+
+.error{
+    background:#fee2e2;
+    color:#b91c1c;
+    padding:12px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media(max-width:900px){
 
     .listing-grid{
-
-        grid-template-columns:1fr;
-
+        grid-template-columns:1fr 1fr;
     }
 
+    .filter-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+}
+
+@media(max-width:700px){
+
+    .listing-grid{
+        grid-template-columns:1fr;
+    }
+
+    .filter-grid{
+        grid-template-columns:1fr;
+    }
 
     .navbar{
-
         flex-direction:column;
-
         gap:15px;
-
     }
 
-
     .container{
-
         padding:15px;
+    }
 
+    .chat-input form{
+        flex-direction:column;
+    }
+
+    .chat-input button{
+        width:100%;
+        height:auto;
+    }
+
+    .bubble{
+        max-width:90%;
+    }
+
+    .profile-card{
+        flex-direction:column;
+        text-align:center;
     }
 
 }
