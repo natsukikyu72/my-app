@@ -345,7 +345,8 @@ app.post(
         const {
             bookId,
             price,
-            condition
+            condition,
+            description
         } = req.body;
 
         let imageUrl: string | null = null;
@@ -405,7 +406,7 @@ app.post(
                 price: Number(price),
 
                 condition: condition || null,
-                
+
                 description: description || null,
 
                 imageUrl: imageUrl
