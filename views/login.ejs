@@ -1,80 +1,51 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
 <meta charset="UTF-8">
-<title>ログイン</title>
-
+<title>ログイン | 慶應教科書フリマ</title>
 <link rel="stylesheet" href="/css/style.css">
-
 </head>
+<body class="auth-page">
 
+<div class="container auth-container">
+  <div class="card auth-card">
+    <div class="auth-header">
+      <img src="/images/keio-icon.png" alt="慶應" class="auth-logo" onError="this.style.display='none'">
+      <span class="auth-sub">慶應義塾生専用ポータル</span>
+      <h1>ログイン</h1>
+    </div>
 
-<body>
+    <% if (typeof error !== "undefined") { %>
+    <p class="error">
+        <%= error %>
+    </p>
+    <% } %>
 
-<div class="container">
+    <form action="/login" method="post">
+      <label>メールアドレス</label>
+      <input
+        type="email"
+        name="email"
+        placeholder="example@keio.jp"
+        required>
 
-<div class="card">
+      <label>パスワード</label>
+      <input
+        type="password"
+        name="password"
+        placeholder="••••••••"
+        required>
 
+      <button type="submit" class="auth-submit">
+        ログイン
+      </button>
+    </form>
 
-<h1>ログイン</h1>
-
-
-<% if (typeof error !== "undefined") { %>
-
-<p class="error">
-    <%= error %>
-</p>
-
-<% } %>
-
-
-
-<form action="/login" method="post">
-
-
-<label>
-メールアドレス
-</label>
-
-<input
-type="email"
-name="email"
-required>
-
-
-
-<label>
-パスワード
-</label>
-
-<input
-type="password"
-name="password"
-required>
-
-
-
-<button type="submit">
-ログイン
-</button>
-
-
-</form>
-
-
-<br>
-
-
-<a href="/signup">
-新規登録はこちら
-</a>
-
-
+    <div class="auth-footer">
+      <a href="/signup">新規登録はこちら →</a>
+    </div>
+  </div>
 </div>
-</div>
-
 
 </body>
-
 </html>
