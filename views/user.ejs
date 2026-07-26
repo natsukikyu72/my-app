@@ -38,7 +38,7 @@ if(user.reviewsReceived.length){
 </a>
 </p>
 
-<% if(user.id === myId){ %>
+<% if(user.id===myId){ %>
 
 <p style="margin-top:20px;">
 <a href="/profile/edit">
@@ -68,25 +68,51 @@ const selling=user.listings.filter(l=>l.status==="SELLING");
 
 <% selling.forEach(listing=>{ %>
 
-<a class="listing-card" href="/listing/<%= listing.id %>">
+<a href="/listing/<%= listing.id %>" class="listing-link">
+
+<div class="listing-card">
+
+<div class="image-wrapper">
 
 <img
 src="<%= listing.imageUrl || '/images/no-image.png' %>"
 class="book-image">
 
-<div class="card-body">
+<span class="status <%= listing.status.toLowerCase() %>">
+
+<%= listing.status==="SELLING"
+? "販売中"
+: listing.status==="RESERVED"
+? "取引中"
+: "売却済み" %>
+
+</span>
+
+</div>
 
 <h3><%= listing.book.title %></h3>
 
-<p><%= listing.book.courseName %></p>
+<p>📖 <%= listing.book.courseName %></p>
 
 <p class="price">
 ¥<%= listing.price.toLocaleString() %>
 </p>
 
-<span class="status selling">
-販売中
+<p class="original">
+定価 ¥<%= listing.book.originalPrice.toLocaleString() %>
+</p>
+
+<p class="seller">
+👤 <%= listing.seller.name %>
+</p>
+
+<span class="campus-tag">
+🏫 <%= listing.seller.campus %>
 </span>
+
+<p class="condition">
+状態：<%= listing.condition ?? "未設定" %>
+</p>
 
 </div>
 
@@ -114,27 +140,51 @@ class="book-image">
 
 <% user.purchases.forEach(purchase=>{ %>
 
-<a class="listing-card" href="/listing/<%= listing.id %>">
+<a href="/listing/<%= purchase.id %>" class="listing-link">
+
+<div class="listing-card">
+
+<div class="image-wrapper">
 
 <img
-src="<%= listing.imageUrl || '/images/no-image.png' %>"
+src="<%= purchase.imageUrl || '/images/no-image.png' %>"
 class="book-image">
 
-<div class="card-body">
+<span class="status <%= purchase.status.toLowerCase() %>">
 
-<h3><%= listing.book.title %></h3>
+<%= purchase.status==="SELLING"
+? "販売中"
+: purchase.status==="RESERVED"
+? "取引中"
+: "売却済み" %>
 
-<p>
-出品者：<%= listing.seller.name %>
-</p>
+</span>
+
+</div>
+
+<h3><%= purchase.book.title %></h3>
+
+<p>📖 <%= purchase.book.courseName %></p>
 
 <p class="price">
-¥<%= listing.price.toLocaleString() %>
+¥<%= purchase.price.toLocaleString() %>
 </p>
 
-<span class="status reserved">
-取引中
+<p class="original">
+定価 ¥<%= purchase.book.originalPrice.toLocaleString() %>
+</p>
+
+<p class="seller">
+👤 <%= purchase.seller.name %>
+</p>
+
+<span class="campus-tag">
+🏫 <%= purchase.seller.campus %>
 </span>
+
+<p class="condition">
+状態：<%= purchase.condition ?? "未設定" %>
+</p>
 
 </div>
 
@@ -148,7 +198,11 @@ class="book-image">
 
 <h2>💬 相談中の商品</h2>
 
-<% if(user.buyerChats.length===0){ %>
+<%
+const chatting=user.buyerChats.filter(chat=>chat.listing.status==="SELLING");
+%>
+
+<% if(chatting.length===0){ %>
 
 <div class="card">
 相談中の商品はありません。
@@ -158,20 +212,52 @@ class="book-image">
 
 <div class="listing-grid">
 
-<% user.buyerChats.forEach(chat=>{ %>
+<% chatting.forEach(chat=>{ %>
 
-<a class="listing-card" href="/chat/<%= chat.id %>">
+<a href="/chat/<%= chat.id %>" class="listing-link">
+
+<div class="listing-card">
+
+<div class="image-wrapper">
 
 <img
 src="<%= chat.listing.imageUrl || '/images/no-image.png' %>"
 class="book-image">
 
-<div class="card-body">
+<span class="status <%= chat.listing.status.toLowerCase() %>">
+
+<%= chat.listing.status==="SELLING"
+? "販売中"
+: chat.listing.status==="RESERVED"
+? "取引中"
+: "売却済み" %>
+
+</span>
+
+</div>
 
 <h3><%= chat.listing.book.title %></h3>
 
-<p>
-出品者：<%= chat.listing.seller.name %>
+<p>📖 <%= chat.listing.book.courseName %></p>
+
+<p class="price">
+¥<%= chat.listing.price.toLocaleString() %>
+</p>
+
+<p class="original">
+定価 ¥<%= chat.listing.book.originalPrice.toLocaleString() %>
+</p>
+
+<p class="seller">
+👤 <%= chat.listing.seller.name %>
+</p>
+
+<span class="campus-tag">
+🏫 <%= chat.listing.seller.campus %>
+</span>
+
+<p class="condition">
+状態：<%= chat.listing.condition ?? "未設定" %>
 </p>
 
 </div>

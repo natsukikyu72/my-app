@@ -349,17 +349,73 @@ select{
 
 }
 
+.search-row{
+    display:flex;
+    gap:12px;
+    margin-bottom:20px;
+}
+
+.search-row input{
+    flex:1;
+    margin-bottom:0;
+}
+
+.filter-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.filter-grid label{
+    display:flex;
+    flex-direction:column;
+    font-weight:600;
+    font-size:14px;
+}
+
 .checkbox{
     display:flex;
     align-items:center;
     gap:8px;
-    margin:5px 0 15px;
-    font-size:15px;
+    font-weight:600;
 }
 
 .checkbox input{
     width:auto;
     margin:0;
+}
+
+.price{
+    font-size:26px;
+    font-weight:700;
+    color:#c8102e;
+    margin:10px 0 4px;
+}
+
+.original{
+    color:#888;
+    font-size:13px;
+    margin-bottom:10px;
+}
+
+.seller,
+.campus,
+.condition{
+    font-size:14px;
+    color:#555;
+    margin:3px 0;
+}
+
+.campus-tag{
+    display:inline-block;
+    margin-top:8px;
+    padding:4px 10px;
+    border-radius:20px;
+    background:#d8e8ff;
+    color:#003c8f;
+    font-size:12px;
+    font-weight:600;
 }
 
 

@@ -188,11 +188,18 @@ name="sellingOnly"
 定価 ¥<%= listing.book.originalPrice.toLocaleString() %>
 </p>
 
-<p>状態：<%= listing.condition ?? "未設定" %></p>
-
 <p class="seller">
 👤 <%= listing.seller.name %>
 </p>
+
+<span class="campus-tag">
+🏫 <%= listing.seller.campus %>
+</span>
+
+<p class="condition">
+状態：<%= listing.condition ?? "未設定" %>
+</p>
+
 
 </div>
 
