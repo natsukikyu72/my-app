@@ -12,11 +12,145 @@
 <div class="container">
 
 <div class="search-box">
+
 <h2>🔍 教科書検索</h2>
+
 <form action="/" method="get">
-<input type="text" name="keyword" value="<%= keyword %>" placeholder="教科書名・授業名で検索">
-<button>検索</button>
+
+<div class="search-row">
+
+<input
+type="text"
+name="keyword"
+value="<%= keyword %>"
+placeholder="教科書名・授業名で検索">
+
+<button type="submit">
+検索
+</button>
+
+</div>
+
+<div class="filter-grid">
+
+<label>
+
+キャンパス
+
+<select name="campus">
+
+<option value="">すべて</option>
+
+<option value="日吉" <%= campus==="日吉"?"selected":"" %>>
+日吉
+</option>
+
+<option value="三田" <%= campus==="三田"?"selected":"" %>>
+三田
+</option>
+
+<option value="矢上" <%= campus==="矢上"?"selected":"" %>>
+矢上
+</option>
+
+<option value="湘南藤沢" <%= campus==="湘南藤沢"?"selected":"" %>>
+湘南藤沢
+</option>
+
+<option value="信濃町" <%= campus==="信濃町"?"selected":"" %>>
+信濃町
+</option>
+
+<option value="芝共立" <%= campus==="芝共立"?"selected":"" %>>
+芝共立
+</option>
+
+</select>
+
+</label>
+
+<label>
+
+学部
+
+<select name="department">
+
+<option value="">すべて</option>
+
+<option value="文学部" <%= department==="文学部"?"selected":"" %>>文学部</option>
+<option value="経済学部" <%= department==="経済学部"?"selected":"" %>>経済学部</option>
+<option value="法学部" <%= department==="法学部"?"selected":"" %>>法学部</option>
+<option value="商学部" <%= department==="商学部"?"selected":"" %>>商学部</option>
+<option value="医学部" <%= department==="医学部"?"selected":"" %>>医学部</option>
+<option value="理工学部" <%= department==="理工学部"?"selected":"" %>>理工学部</option>
+<option value="総合政策学部" <%= department==="総合政策学部"?"selected":"" %>>総合政策学部</option>
+<option value="環境情報学部" <%= department==="環境情報学部"?"selected":"" %>>環境情報学部</option>
+<option value="看護医療学部" <%= department==="看護医療学部"?"selected":"" %>>看護医療学部</option>
+<option value="薬学部" <%= department==="薬学部"?"selected":"" %>>薬学部</option>
+
+</select>
+
+</label>
+
+<label>
+
+学年
+
+<select name="grade">
+
+<option value="">すべて</option>
+
+<option value="1" <%= grade==="1"?"selected":"" %>>1年</option>
+<option value="2" <%= grade==="2"?"selected":"" %>>2年</option>
+<option value="3" <%= grade==="3"?"selected":"" %>>3年</option>
+<option value="4" <%= grade==="4"?"selected":"" %>>4年</option>
+<option value="5" <%= grade==="5"?"selected":"" %>>5年</option>
+<option value="6" <%= grade==="6"?"selected":"" %>>6年</option>
+<option value="M1" <%= grade==="M1"?"selected":"" %>>修士1年</option>
+<option value="M2" <%= grade==="M2"?"selected":"" %>>修士2年</option>
+<option value="D" <%= grade==="D"?"selected":"" %>>博士課程</option>
+
+</select>
+
+</label>
+
+<label>
+
+並び替え
+
+<select name="sort">
+
+<option value="new" <%= sort==="new"?"selected":"" %>>
+新しい順
+</option>
+
+<option value="priceAsc" <%= sort==="priceAsc"?"selected":"" %>>
+価格が安い順
+</option>
+
+<option value="priceDesc" <%= sort==="priceDesc"?"selected":"" %>>
+価格が高い順
+</option>
+
+</select>
+
+</label>
+
+</div>
+
+<label class="checkbox">
+
+<input
+type="checkbox"
+name="sellingOnly"
+<%= sellingOnly ? "checked" : "" %>>
+
+販売中のみ表示
+
+</label>
+
 </form>
+
 </div>
 
 <% if(listings.length===0){ %>

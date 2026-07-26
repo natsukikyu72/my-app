@@ -166,37 +166,69 @@ app.post("/logout", (req, res) => {
 app.get("/", requireLogin, async (req: any, res) => {
 
   const keyword = (req.query.keyword as string) || "";
+  const campus = (req.query.campus as string) || "";
+  const department = (req.query.department as string) || "";
+  const grade = (req.query.grade as string) || "";
+  const sellingOnly = req.query.sellingOnly !== undefined;
+  const sort = (req.query.sort as string) || "new";
 
   const listings = await prisma.listing.findMany({
-    where: {
-      book: {
-        OR: [
-          {
-            title: {
-              contains: keyword,
-              mode: "insensitive"
-            }
-          },
-          {
-            courseName: {
-              contains: keyword,
-              mode: "insensitive"
-            }
-          }
-        ]
-      }
+
+  where: {
+
+    ...(sellingOnly && {
+      status: "SELLING"
+    }),
+
+    seller: {
+      ...(campus && { campus }),
+      ...(department && { department }),
+      ...(grade && { grade })
     },
-    include: {
-      book: true,
-      seller: true
+
+    book: {
+      OR: [
+        {
+          title: {
+            contains: keyword,
+            mode: "insensitive"
+          }
+        },
+        {
+          courseName: {
+            contains: keyword,
+            mode: "insensitive"
+          }
+        }
+      ]
     }
-  });
+
+  },
+
+  include: {
+    book: true,
+    seller: true
+  },
+
+  orderBy:
+    sort === "priceAsc"
+      ? { price: "asc" }
+      : sort === "priceDesc"
+      ? { price: "desc" }
+      : { createdAt: "desc" }
+
+});
 
   res.render("index", {
     myName: req.session.userName,
     myId: req.session.userId,
     listings,
-    keyword
+    keyword,
+    campus,
+    department,
+    grade,
+    sellingOnly,
+    sort
   });
 });
 
@@ -338,6 +370,12 @@ app.get("/user/:id", requireLogin, async(req:any, res)=>{
 
     // 相談中
     buyerChats:{
+      where:{
+        listing:{
+            status:"SELLING"
+        }
+    },
+
       include:{
         listing:{
           include:{
