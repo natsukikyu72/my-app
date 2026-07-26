@@ -350,7 +350,8 @@ app.get("/user/:id", requireLogin, async(req:any, res)=>{
     // 出品一覧
     listings:{
       include:{
-        book:true
+        book:true,
+        seller:true
       },
       orderBy:{
         createdAt:"desc"
