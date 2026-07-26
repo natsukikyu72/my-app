@@ -219,6 +219,13 @@ app.get("/", requireLogin, async (req: any, res) => {
 
 });
 
+const unreadCount = await prisma.message.count({
+    where:{
+      receiverId:req.session.userId,
+      isRead:false
+    }
+  });
+
   res.render("index", {
     myName: req.session.userName,
     myId: req.session.userId,
@@ -228,7 +235,8 @@ app.get("/", requireLogin, async (req: any, res) => {
     department,
     grade,
     sellingOnly,
-    sort
+    sort,
+    unreadCount
   });
 });
 
@@ -242,9 +250,17 @@ app.get("/listing/new", requireLogin, async (req, res) => {
     },
   });
 
+  const unreadCount = await prisma.message.count({
+    where:{
+      receiverId:req.session.userId,
+      isRead:false
+    }
+  });
+
   res.render("listing_new", {
     books,
-    myId:req.session.userId
+    myId:req.session.userId,
+    unreadCount
   });
 });
 
@@ -351,8 +367,23 @@ app.get("/user/:id", requireLogin, async(req:any, res)=>{
     listings:{
       include:{
         book:true,
-        seller:true
+        seller:true,
+
+        chatRooms:{
+          include:{
+            buyer:true,
+
+            messages:{
+              where:{
+                receiverId:req.session.userId,
+                isRead:false
+              }
+            }
+          }
+        }
+
       },
+
       orderBy:{
         createdAt:"desc"
       }
@@ -363,9 +394,25 @@ app.get("/user/:id", requireLogin, async(req:any, res)=>{
       where:{
         status:"RESERVED"
       },
+
       include:{
         book:true,
-        seller:true
+        seller:true,
+
+        chatRooms:{
+          where:{
+            buyerId:req.session.userId
+          },
+
+          include:{
+            messages:{
+              where:{
+                receiverId:req.session.userId,
+                isRead:false
+              }
+            }
+          }
+        }
       }
     },
 
@@ -373,15 +420,22 @@ app.get("/user/:id", requireLogin, async(req:any, res)=>{
     buyerChats:{
       where:{
         listing:{
-            status:"SELLING"
+          status:"SELLING"
         }
-    },
+      },
 
       include:{
         listing:{
           include:{
             book:true,
             seller:true
+          }
+        },
+
+        messages:{
+          where:{
+            receiverId:req.session.userId,
+            isRead:false
           }
         }
       }
@@ -405,10 +459,18 @@ app.get("/user/:id", requireLogin, async(req:any, res)=>{
     return res.status(404).send("ユーザーが存在しません");
   }
 
+  const unreadCount = await prisma.message.count({
+    where:{
+      receiverId:req.session.userId,
+      isRead:false
+    }
+  });
+
 
   res.render("user",{
     user,
-    myId:req.session.userId
+    myId:req.session.userId,
+    unreadCount
   });
 
 
@@ -438,10 +500,17 @@ app.get("/user/:id/reviews", requireLogin, async(req:any,res)=>{
 
   });
 
+  const unreadCount = await prisma.message.count({
+    where:{
+      receiverId:req.session.userId,
+      isRead:false
+    }
+  });
 
   res.render("reviews",{
     reviews,
-    myId:req.session.userId
+    myId:req.session.userId,
+    unreadCount
   });
 
 });
@@ -462,6 +531,10 @@ app.get("/listing/:id", requireLogin, async (req: any, res) => {
                 include:{
                     buyer:true,
                     messages:{
+                        where:{
+                            receiverId:req.session.userId,
+                            isRead:false
+                        },
                         orderBy:{
                             createdAt:"desc"
                         },
@@ -479,10 +552,18 @@ app.get("/listing/:id", requireLogin, async (req: any, res) => {
     // 自分のチャット（購入希望者のみ）
    const myChat = listing.chatRooms.find(chat=>chat.buyerId===req.session.userId);
 
+   const unreadCount = await prisma.message.count({
+    where:{
+      receiverId:req.session.userId,
+      isRead:false
+    }
+  });
+
     res.render("listing_detail",{
         listing,
         myId:req.session.userId,
-        myChat
+        myChat,
+        unreadCount
     });
 });
 
@@ -554,7 +635,6 @@ app.post("/chat/start/:listingId", async (req: any, res) => {
 });
 
 app.get("/chat/:id", requireLogin, async (req:any,res)=>{
-
     const userId=req.session.userId;
 
     const chatId=parseInt(req.params.id);
@@ -603,11 +683,28 @@ app.get("/chat/:id", requireLogin, async (req:any,res)=>{
         return res.status(403).send("アクセスできません");
     }
 
+    await prisma.message.updateMany({
+      where:{
+        chatRoomId:chatId,
+        receiverId:userId,
+        isRead:false
+      },
+      data:{
+        isRead:true
+      }
+    });
+
+    const unreadCount = await prisma.message.count({
+      where:{
+        receiverId:userId,
+        isRead:false
+      }
+    });
+
     res.render("chat",{
-
         chatRoom,
-        myId:userId
-
+        myId:userId,
+        unreadCount
     });
 
 });
@@ -647,6 +744,11 @@ app.post("/chat/:id/message", requireLogin, async(req:any,res)=>{
         return res.status(403).send("アクセスできません");
     }
 
+    const receiverId =
+      userId === chatRoom.sellerId
+        ? chatRoom.buyerId
+        : chatRoom.sellerId;
+
     // 他の人と取引成立していたら送信不可
     if(
 
@@ -660,18 +762,14 @@ app.post("/chat/:id/message", requireLogin, async(req:any,res)=>{
     }
 
     await prisma.message.create({
-
-        data:{
-
-            chatRoomId,
-
-            senderId:userId,
-
-            content
-
-        }
-
-    });
+      data:{
+        chatRoomId,
+        senderId:userId,
+        receiverId,
+        content,
+        isRead:false
+      }
+});
 
     res.redirect(`/chat/${chatRoomId}`);
 
@@ -871,10 +969,18 @@ app.get("/review/new/:listingId", requireLogin, async(req:any, res)=>{
     return res.status(404).send("商品がありません");
   }
 
+  const unreadCount = await prisma.message.count({
+      where:{
+        receiverId:userId,
+        isRead:false
+      }
+    });
+  
 
   res.render("review_new",{
     listing,
-    myId:req.session.userId
+    myId:req.session.userId,
+    unreadCount
   });
 
 });
@@ -891,9 +997,17 @@ app.get("/profile/edit", requireLogin, async (req:any, res)=>{
         return res.redirect("/");
     }
 
+    const unreadCount = await prisma.message.count({
+      where:{
+        receiverId:userId,
+        isRead:false
+      }
+    });
+
     res.render("profile_edit",{
         user,
-        myId:req.session.userId
+        myId:req.session.userId,
+        unreadCount
     });
 
 });

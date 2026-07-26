@@ -167,6 +167,12 @@ name="sellingOnly"
 
 <div class="listing-card">
 
+<% if(chat.messages.length>0){ %>
+
+<span class="card-dot"></span>
+
+<% } %>
+
 <div class="image-wrapper">
 <img src="<%= listing.imageUrl || '/images/no-image.png' %>" class="book-image">
 

@@ -10,8 +10,14 @@
 ホーム
 </a>
 
-<a href="/user/<%= myId %>">
+<a href="/user/<%= myId %>" class="nav-link">
+
 マイページ
+
+<% if(hasUnread){ %>
+<span class="red-dot"></span>
+<% } %>
+
 </a>
 
 <a href="/listing/new">

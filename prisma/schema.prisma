@@ -31,6 +31,8 @@ model User {
 
   messages Message[] @relation("UserMessages")
 
+  messagesReceived Message[] @relation("UserReceivedMessages")
+
   reviewsGiven Review[] @relation("ReviewerReviews")
 
   reviewsReceived Review[] @relation("ReviewedReviews")
@@ -111,9 +113,14 @@ model Message {
   senderId Int
   sender   User @relation("UserMessages", fields: [senderId], references: [id])
 
+  receiverId Int
+  receiver User @relation("UserReceivedMessages", fields:[receiverId], references:[id])
+
   content String
 
   createdAt DateTime @default(now())
+
+  isRead Boolean @default(false)
 }
 
 model Review {
