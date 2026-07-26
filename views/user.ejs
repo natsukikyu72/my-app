@@ -72,10 +72,14 @@ const selling=user.listings.filter(l=>l.status==="SELLING");
 
 <div class="listing-card">
 
-<% if(chat.messages.length>0){ %>
+<%
+const hasUnreadChat = listing.chatRooms.some(
+  chat => chat.messages.length > 0
+);
+%>
 
+<% if(hasUnreadChat){ %>
 <span class="card-dot"></span>
-
 <% } %>
 
 <div class="image-wrapper">
@@ -150,11 +154,16 @@ class="book-image">
 
 <div class="listing-card">
 
-<% if(chat.messages.length>0){ %>
+<%
+const hasUnreadChat = listing.chatRooms.some(
+  chat => chat.messages.length > 0
+);
+%>
 
+<% if(hasUnreadChat){ %>
 <span class="card-dot"></span>
-
 <% } %>
+
 
 <div class="image-wrapper">
 
@@ -230,10 +239,14 @@ const chatting=user.buyerChats.filter(chat=>chat.listing.status==="SELLING");
 
 <div class="listing-card">
 
-<% if(chat.messages.length>0){ %>
+<%
+const hasUnreadChat = listing.chatRooms.some(
+  chat => chat.messages.length > 0
+);
+%>
 
+<% if(hasUnreadChat){ %>
 <span class="card-dot"></span>
-
 <% } %>
 
 <div class="image-wrapper">

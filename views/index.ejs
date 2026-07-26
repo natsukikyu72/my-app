@@ -167,10 +167,14 @@ name="sellingOnly"
 
 <div class="listing-card">
 
-<% if(chat.messages.length>0){ %>
+<%
+const hasUnreadChat = listing.chatRooms.some(
+  chat => chat.messages.length > 0
+);
+%>
 
+<% if(hasUnreadChat){ %>
 <span class="card-dot"></span>
-
 <% } %>
 
 <div class="image-wrapper">
