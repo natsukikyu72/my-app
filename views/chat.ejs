@@ -77,19 +77,21 @@
 
 <% chatRoom.messages.forEach(message=>{ %>
 
-<div class="message <%= message.senderId===myId ? 'mine' : '' %>">
+<div class="message <%= message.senderId===myId ? 'mine' : 'other' %>">
 
-<div class="message-header">
+<div class="bubble">
 
 <strong>
-
 <a href="/user/<%= message.sender.id %>">
 <%= message.sender.name %>
 </a>
-
 </strong>
 
-<span class="small">
+<div class="content">
+<%= message.content %>
+</div>
+
+<div class="small">
 
 <%= new Date(message.createdAt).toLocaleString("ja-JP",{
 timeZone:"Asia/Tokyo",
@@ -100,12 +102,8 @@ hour:"2-digit",
 minute:"2-digit"
 }) %>
 
-</span>
-
 </div>
 
-<div class="message-content">
-<%= message.content %>
 </div>
 
 </div>
