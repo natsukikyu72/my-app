@@ -183,7 +183,8 @@ r=>r.reviewerId===myId
 
 <% if(
 listing.status==="SOLD" &&
-!alreadyReviewed
+!alreadyReviewed &&
+listing.sellerId===myId
 ){ %>
 
 <a href="/review/new/<%= listing.id %>">
