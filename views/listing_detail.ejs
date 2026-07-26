@@ -79,6 +79,31 @@
 
 <% } %>
 
+<%
+const alreadyReviewed =
+listing.reviews.some(
+r=>r.reviewerId===myId
+);
+%>
+
+
+<% if(
+listing.status==="SOLD" &&
+!alreadyReviewed &&
+listing.buyerId===myId
+){ %>
+
+<a href="/review/new/<%= listing.id %>">
+
+<button>
+⭐ 評価する
+</button>
+
+</a>
+
+<% } %>
+
+
 <% } %>
 
 
@@ -177,7 +202,11 @@ listing.status==="SOLD" &&
 
 <!-- その他相談 -->
 
-<h2>💬 その他の購入相談</h2>
+<h2>
+<%= listing.status==="SELLING"
+? "💬 購入相談"
+: "💬 その他の購入相談" %>
+</h2>
 
 <%
 const otherChats = listing.chatRooms.filter(
