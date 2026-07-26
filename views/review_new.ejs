@@ -2,13 +2,9 @@
 <html lang="ja">
 
 <head>
-
 <meta charset="UTF-8">
-
 <title>評価する</title>
-
 <link rel="stylesheet" href="/css/style.css">
-
 </head>
 
 <body>
@@ -17,15 +13,33 @@
 
 <div class="container">
 
+<%
+const targetUser =
+listing.sellerId===myId
+? listing.buyer
+: listing.seller;
+%>
+
 <h1>
-
-<%= listing.book.title %>
-
-を評価
-
+<%= targetUser.name %> さんを評価
 </h1>
 
 <div class="card">
+
+<p>
+商品：
+<strong>
+<%= listing.book.title %>
+</strong>
+</p>
+
+<p>
+取引相手：
+<a href="/user/<%= targetUser.id %>">
+<%= targetUser.name %>
+</a>
+</p>
+
 
 <form action="/review" method="post">
 
@@ -34,45 +48,40 @@ type="hidden"
 name="listingId"
 value="<%= listing.id %>">
 
+
 <label>
-
 評価
-
 </label>
 
 <select name="rating">
 
 <option value="5">★★★★★</option>
-
 <option value="4">★★★★☆</option>
-
 <option value="3">★★★☆☆</option>
-
 <option value="2">★★☆☆☆</option>
-
 <option value="1">★☆☆☆☆</option>
 
 </select>
 
+
 <label>
-
 コメント
-
 </label>
 
 <textarea
 name="comment"
 placeholder="コメントを入力"></textarea>
 
+
 <button>
-
 送信する
-
 </button>
+
 
 </form>
 
 </div>
+
 </div>
 
 </body>
