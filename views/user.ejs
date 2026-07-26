@@ -51,10 +51,10 @@ if(user.reviewsReceived.length){
 </div>
 
 <%
-const selling=user.listings.filter(l=>l.status==="SELLING");
+const selling=user.listings;
 %>
 
-<h2>📚 出品中の商品</h2>
+<h2>📚 出品した商品</h2>
 
 <% if(selling.length===0){ %>
 
