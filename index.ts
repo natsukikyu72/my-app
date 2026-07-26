@@ -264,7 +264,9 @@ app.get("/", requireLogin, async (req: any, res) => {
     include:{
       messages:{
         where:{
-          receiverId:req.session.userId,
+          senderId:{
+            not:req.session.userId
+          },
           isRead:false
         }
       }
@@ -442,7 +444,9 @@ app.get("/user/:id", requireLogin, async(req:any, res)=>{
 
             messages:{
               where:{
-                receiverId:req.session.userId,
+                senderId:{
+                  not:req.session.userId
+                },
                 isRead:false
               }
             }
@@ -474,7 +478,9 @@ app.get("/user/:id", requireLogin, async(req:any, res)=>{
           include:{
             messages:{
               where:{
-                receiverId:req.session.userId,
+                senderId:{
+                  not:req.session.userId
+                },
                 isRead:false
               }
             }
@@ -501,7 +507,9 @@ app.get("/user/:id", requireLogin, async(req:any, res)=>{
 
         messages:{
           where:{
-            receiverId:req.session.userId,
+            senderId:{
+              not:req.session.userId
+            },
             isRead:false
           }
         }
@@ -582,7 +590,9 @@ app.get("/listing/:id", requireLogin, async (req: any, res) => {
                     buyer:true,
                     messages:{
                         where:{
-                            receiverId:req.session.userId,
+                            senderId:{
+                              not:req.session.userId
+                            },
                             isRead:false
                         },
                         orderBy:{
@@ -728,7 +738,9 @@ app.get("/chat/:id", requireLogin, async (req:any,res)=>{
     await prisma.message.updateMany({
       where:{
         chatRoomId:chatId,
-        receiverId:userId,
+        senderId:{
+          not:userId
+        },
         isRead:false
       },
       data:{
@@ -778,10 +790,6 @@ app.post("/chat/:id/message", requireLogin, async(req:any,res)=>{
         return res.status(403).send("アクセスできません");
     }
 
-    const receiverId =
-      userId === chatRoom.sellerId
-        ? chatRoom.buyerId
-        : chatRoom.sellerId;
 
     // 他の人と取引成立していたら送信不可
     if(
@@ -799,7 +807,6 @@ app.post("/chat/:id/message", requireLogin, async(req:any,res)=>{
       data:{
         chatRoomId,
         senderId:userId,
-        receiverId,
         content,
         isRead:false
       }
