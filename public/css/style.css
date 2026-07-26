@@ -719,13 +719,17 @@ form label:first-of-type {
   margin-bottom: 32px;
 }
 
+.detail-image-wrapper {
+  position: relative;
+  width: fit-content;
+  margin: 0 auto 24px;
+}
+
 .detail-image {
-  width: 100%;
-  max-width: 420px;
-  aspect-ratio: 1/1;
+  width: 280px;
+  height: 380px;
   object-fit: cover;
   display: block;
-  margin: 0 auto 24px auto;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border-light);

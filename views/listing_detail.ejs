@@ -15,10 +15,11 @@
 
 <div class="detail-card">
 
-<div class="image-wrapper">
-<img src="<%= listing.imageUrl || '/images/no-image.png' %>" class="detail-image">
+<div class="detail-image-wrapper">
 
-<span class="status <%= listing.status.toLowerCase() %>">
+<img src="<%= listing.imageUrl || '/images/keio-icon.png' %>" class="detail-image">
+
+<span class="status <%= listing.status.toLowerCase() %>">>
 <%= listing.status==="SELLING"
 ? "販売中"
 : listing.status==="RESERVED"
