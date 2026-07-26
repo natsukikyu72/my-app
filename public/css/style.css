@@ -726,9 +726,10 @@ form label:first-of-type {
 }
 
 .detail-image {
-  width: 280px;
   height: 380px;
-  object-fit: cover;
+  width: auto;
+  max-width: 320px;
+  object-fit: contain;
   display: block;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
