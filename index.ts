@@ -220,11 +220,23 @@ app.get("/", requireLogin, async (req: any, res) => {
 });
 
 const unreadCount = await prisma.message.count({
-    where:{
-      receiverId:req.session.userId,
-      isRead:false
+  where:{
+    isRead:false,
+    senderId:{
+      not:req.session.userId
+    },
+    chatRoom:{
+      OR:[
+        {
+          buyerId:req.session.userId
+        },
+        {
+          sellerId:req.session.userId
+        }
+      ]
     }
-  });
+  }
+});
 
   res.render("index", {
     myName: req.session.userName,
@@ -252,8 +264,20 @@ app.get("/listing/new", requireLogin, async (req, res) => {
 
   const unreadCount = await prisma.message.count({
     where:{
-      receiverId:req.session.userId,
-      isRead:false
+      isRead:false,
+      senderId:{
+        not:req.session.userId
+      },
+      chatRoom:{
+        OR:[
+          {
+            buyerId:req.session.userId
+          },
+          {
+            sellerId:req.session.userId
+          }
+        ]
+      }
     }
   });
 
@@ -461,11 +485,22 @@ app.get("/user/:id", requireLogin, async(req:any, res)=>{
 
   const unreadCount = await prisma.message.count({
     where:{
-      receiverId:req.session.userId,
-      isRead:false
+      isRead:false,
+      senderId:{
+        not:req.session.userId
+      },
+      chatRoom:{
+        OR:[
+          {
+            buyerId:req.session.userId
+          },
+          {
+            sellerId:req.session.userId
+          }
+        ]
+      }
     }
   });
-
 
   res.render("user",{
     user,
@@ -502,8 +537,20 @@ app.get("/user/:id/reviews", requireLogin, async(req:any,res)=>{
 
   const unreadCount = await prisma.message.count({
     where:{
-      receiverId:req.session.userId,
-      isRead:false
+      isRead:false,
+      senderId:{
+        not:req.session.userId
+      },
+      chatRoom:{
+        OR:[
+          {
+            buyerId:req.session.userId
+          },
+          {
+            sellerId:req.session.userId
+          }
+        ]
+      }
     }
   });
 
@@ -553,11 +600,23 @@ app.get("/listing/:id", requireLogin, async (req: any, res) => {
    const myChat = listing.chatRooms.find(chat=>chat.buyerId===req.session.userId);
 
    const unreadCount = await prisma.message.count({
-    where:{
-      receiverId:req.session.userId,
-      isRead:false
-    }
-  });
+      where:{
+        isRead:false,
+        senderId:{
+          not:req.session.userId
+        },
+        chatRoom:{
+          OR:[
+            {
+              buyerId:req.session.userId
+            },
+            {
+              sellerId:req.session.userId
+            }
+          ]
+        }
+      }
+    });
 
     res.render("listing_detail",{
         listing,
@@ -696,8 +755,20 @@ app.get("/chat/:id", requireLogin, async (req:any,res)=>{
 
     const unreadCount = await prisma.message.count({
       where:{
-        receiverId:userId,
-        isRead:false
+        isRead:false,
+        senderId:{
+          not:req.session.userId
+        },
+        chatRoom:{
+          OR:[
+            {
+              buyerId:req.session.userId
+            },
+            {
+              sellerId:req.session.userId
+            }
+          ]
+        }
       }
     });
 
@@ -970,11 +1041,23 @@ app.get("/review/new/:listingId", requireLogin, async(req:any, res)=>{
   }
 
   const unreadCount = await prisma.message.count({
-      where:{
-        receiverId:userId,
-        isRead:false
+    where:{
+      isRead:false,
+      senderId:{
+        not:req.session.userId
+      },
+      chatRoom:{
+        OR:[
+          {
+            buyerId:req.session.userId
+          },
+          {
+            sellerId:req.session.userId
+          }
+        ]
       }
-    });
+    }
+  });
   
 
   res.render("review_new",{
@@ -999,8 +1082,20 @@ app.get("/profile/edit", requireLogin, async (req:any, res)=>{
 
     const unreadCount = await prisma.message.count({
       where:{
-        receiverId:userId,
-        isRead:false
+        isRead:false,
+        senderId:{
+          not:req.session.userId
+        },
+        chatRoom:{
+          OR:[
+            {
+              buyerId:req.session.userId
+            },
+            {
+              sellerId:req.session.userId
+            }
+          ]
+        }
       }
     });
 
