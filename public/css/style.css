@@ -897,6 +897,19 @@ form label:first-of-type {
   font-weight: 600;
 }
 
+.description-box {
+  margin-top:24px;
+  padding:20px;
+  background:#F8FAFC;
+  border-radius:12px;
+  border:1px solid var(--border-light);
+}
+
+.description-box p {
+  color:var(--text-muted);
+  white-space:pre-line;
+}
+
 /* ==========================================================================
    RESPONSIVE DESIGN
    ========================================================================== */

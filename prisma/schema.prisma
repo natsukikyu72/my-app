@@ -63,6 +63,7 @@ model Listing {
   price     Int
   condition String?
   imageUrl  String?
+  description String?
 
   status ListingStatus @default(SELLING)
 

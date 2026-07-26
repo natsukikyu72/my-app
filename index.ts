@@ -405,6 +405,8 @@ app.post(
                 price: Number(price),
 
                 condition: condition || null,
+                
+                description: description || null,
 
                 imageUrl: imageUrl
 
